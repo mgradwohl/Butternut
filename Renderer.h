@@ -18,16 +18,18 @@ public:
 	{
 		bool Accumulate = true;
 	};
+
 public:
 	Renderer() = default;
 
 	void OnResize(uint32_t width, uint32_t height);
 	void Render(const Scene& scene, const Camera& camera);
 
-	std::shared_ptr<winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget> GetFinalImage() const { return m_FinalImage; }
+	winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget& GetFinalImage() { return m_FinalImage; }
 
 	void ResetFrameIndex() { m_FrameIndex = 1; }
 	Settings& GetSettings() { return m_Settings; }
+
 private:
 	struct HitPayload
 	{
@@ -43,8 +45,9 @@ private:
 	HitPayload TraceRay(const Ray& ray);
 	HitPayload ClosestHit(const Ray& ray, float hitDistance, int objectIndex);
 	HitPayload Miss(const Ray& ray);
+
 private:
-	std::shared_ptr<winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget> m_FinalImage;
+	winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget m_FinalImage{nullptr};
 	Settings m_Settings;
 
 	std::vector<uint32_t> m_ImageHorizontalIter, m_ImageVerticalIter;

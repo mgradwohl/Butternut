@@ -39,8 +39,7 @@
 			: m_Name(name) {}
 		~ScopedTimer()
 		{
-			float time = m_Timer.ElapsedMillis();
-			ML_TRACE("[TIMER] {} {}ms\n", m_Name,time);
+			ML_TRACE("[TIMER] {} {}ms\n", m_Name, m_Timer.ElapsedMillis());
 		}
 	private:
 		std::string m_Name;

@@ -26,15 +26,16 @@ void Renderer::OnResize(uint32_t width, uint32_t height)
 	if (m_FinalImage)
 	{
 		// No resize necessary
-		if (m_FinalImage->SizeInPixels().Width == width && m_FinalImage->SizeInPixels().Height == height)
+		if (m_FinalImage.SizeInPixels().Width == width && m_FinalImage.SizeInPixels().Height == height)
 			return;
 
 		// todo
-		//m_FinalImage->Resize(width, height);
+		//m_FinalImage.Resize(width, height);
 	}
 	else
 	{
-		m_FinalImage = std::make_shared<winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget>(width, height);
+		// TODO creation code
+		//m_FinalImage = winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget{ width, height, };
 	}
 
 	delete[] m_ImageData;
@@ -57,7 +58,7 @@ void Renderer::Render(const Scene& scene, const Camera& camera)
 	m_ActiveCamera = &camera;
 	
 	if (m_FrameIndex == 1)
-		memset(m_AccumulationData, 0, m_FinalImage->SizeInPixels().Width * m_FinalImage->SizeInPixels().Height * sizeof(glm::vec4));
+		memset(m_AccumulationData, 0, m_FinalImage.SizeInPixels().Width * m_FinalImage.SizeInPixels().Height * sizeof(glm::vec4));
 
 #define MT 1
 #if MT
@@ -68,13 +69,13 @@ void Renderer::Render(const Scene& scene, const Camera& camera)
 				[this, y](uint32_t x)
 				{
 					glm::vec4 color = PerPixel(x, y);
-					m_AccumulationData[x + y * m_FinalImage->SizeInPixels().Width] += color;
+					m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width] += color;
 
-					glm::vec4 accumulatedColor = m_AccumulationData[x + y * m_FinalImage->SizeInPixels().Width];
+					glm::vec4 accumulatedColor = m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width];
 					accumulatedColor /= (float)m_FrameIndex;
 
 					accumulatedColor = glm::clamp(accumulatedColor, glm::vec4(0.0f), glm::vec4(1.0f));
-					m_ImageData[x + y * m_FinalImage->SizeInPixels().Width] = Utils::ConvertToRGBA(accumulatedColor);
+					m_ImageData[x + y * m_FinalImage.SizeInPixels().Width] = Utils::ConvertToRGBA(accumulatedColor);
 				});
 		});
 
@@ -98,7 +99,7 @@ void Renderer::Render(const Scene& scene, const Camera& camera)
 
 	//	winrt::array_view<uint32_t> view{m_ImageData};
 	//	SetPixelBytes wants an array of bytes, not an array of uint32_ts
-	//m_FinalImage->SetPixelBytes(m_ImageData);
+	//m_FinalImage.SetPixelBytes(m_ImageData);
 
 	if (m_Settings.Accumulate)
 		m_FrameIndex++;
@@ -110,7 +111,7 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 {
 	Ray ray;
 	ray.Origin = m_ActiveCamera->GetPosition();
-	ray.Direction = m_ActiveCamera->GetRayDirections()[x + y * m_FinalImage->SizeInPixels().Width];
+	ray.Direction = m_ActiveCamera->GetRayDirections()[x + y * m_FinalImage.SizeInPixels().Width];
 	
 	glm::vec3 color(0.0f);
 	float multiplier = 1.0f;
@@ -208,7 +209,7 @@ Renderer::HitPayload Renderer::ClosestHit(const Ray& ray, float hitDistance, int
 	return payload;
 }
 
-Renderer::HitPayload Renderer::Miss(const Ray& ray)
+Renderer::HitPayload Renderer::Miss([[maybe_unused]] const Ray& ray)
 {
 	Renderer::HitPayload payload;
 	payload.HitDistance = -1.0f;
