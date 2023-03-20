@@ -4,6 +4,9 @@
 
 #include <vector>
 
+#include "Camera.h"
+#include "Timer.h"
+
 struct Material
 {
 	glm::vec3 Albedo{ 1.0f };
@@ -19,8 +22,31 @@ struct Sphere
 	int MaterialIndex = 0;
 };
 
-struct Scene
+class Scene
 {
+public:
+	Scene();
+
+	void Init(uint32_t viewportWidth, uint32_t viewportHeight)
+	{
+		_ViewportWidth = viewportWidth;
+		_ViewportHeight = viewportHeight;
+		_camera.OnResize(viewportWidth, viewportHeight);
+	}
+
+	void OnUpdate(float ts)
+	{
+		_camera.OnUpdate(ts);
+//			_Renderer.ResetFrameIndex();
+	}
+
+	const Camera& GetCamera() { return _camera; }
+public:
 	std::vector<Sphere> Spheres;
 	std::vector<Material> Materials;
+
+private:
+	uint32_t _ViewportWidth = 0, _ViewportHeight = 0;
+	float _LastRenderTime = 0.0f;
+	Camera _camera;
 };

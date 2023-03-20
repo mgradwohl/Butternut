@@ -1,10 +1,19 @@
 #include "pch.h"
 
 #include "Renderer.h"
-#include "Random.h"
 
+#include <winrt/Microsoft.UI.h>
+#include "winrt/Windows.UI.h"
 #include <winrt/Microsoft.Graphics.Canvas.h>
+#include <winrt/Microsoft.Graphics.Canvas.UI.Xaml.h>
+#include <winrt/Microsoft.Graphics.DirectX.h>
+#include <winrt/Windows.Storage.Streams.h>
+
 #include <execution>
+#include <vector>
+
+#include "Random.h"
+#include "Log.h"
 
 namespace Utils {
 
@@ -19,93 +28,144 @@ namespace Utils {
 		return result;
 	}
 
+	static uint32_t ConvertToBGRA(const glm::vec4& color)
+	{
+		uint8_t r = (uint8_t)(color.r * 255.0f);
+		uint8_t g = (uint8_t)(color.g * 255.0f);
+		uint8_t b = (uint8_t)(color.b * 255.0f);
+		uint8_t a = (uint8_t)(color.a * 255.0f);
+
+		uint32_t result = (b << 24) | (g << 16) | (r << 8) | a;
+		return result;
+	}
 }
 
-void Renderer::OnResize(uint32_t width, uint32_t height)
+winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget& Renderer::GetImage()
+{
+	return m_FinalImage;
+}
+
+void Renderer::OnResize(winrt::Microsoft::Graphics::Canvas::CanvasDevice& device, uint32_t width, uint32_t height, float dpi)
 {
 	if (m_FinalImage)
 	{
 		// No resize necessary
 		if (m_FinalImage.SizeInPixels().Width == width && m_FinalImage.SizeInPixels().Height == height)
 			return;
-
-		// todo
-		//m_FinalImage.Resize(width, height);
 	}
 	else
 	{
-		// TODO creation code
-		//m_FinalImage = winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget{ width, height, };
+		float w = width;
+		float h = height;
+		//_spritesheet = Microsoft::Graphics::Canvas::CanvasRenderTarget(_canvasDevice, _spriteDipsPerRow, _spriteDipsPerRow, _dpi);
+
+		m_FinalImage = winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget(device, w, h, dpi);// , winrt::Microsoft::Graphics::DirectX::DirectXPixelFormat::R8G8B8A8UInt, winrt::Microsoft::Graphics::Canvas::CanvasAlphaMode::Straight );
 	}
 
+	uint32_t w = m_FinalImage.SizeInPixels().Width;
+	uint32_t h = m_FinalImage.SizeInPixels().Height;
 	delete[] m_ImageData;
-	m_ImageData = new uint32_t[width * height];
+	m_ImageData = new uint32_t[w * h];
 
 	delete[] m_AccumulationData;
-	m_AccumulationData = new glm::vec4[width * height];
+	m_AccumulationData = new glm::vec4[w * h];
 
-	m_ImageHorizontalIter.resize(width);
-	m_ImageVerticalIter.resize(height);
-	for (uint32_t i = 0; i < width; i++)
+	m_ImageHorizontalIter.resize(w);
+	m_ImageVerticalIter.resize(h);
+	for (uint32_t i = 0; i < w; i++)
 		m_ImageHorizontalIter[i] = i;
-	for (uint32_t i = 0; i < height; i++)
+	for (uint32_t i = 0; i < h; i++)
 		m_ImageVerticalIter[i] = i;
 }
 
-void Renderer::Render(const Scene& scene, const Camera& camera)
+void Renderer::Render(Scene& scene)
 {
+	ML_METHOD;
 	m_ActiveScene = &scene;
-	m_ActiveCamera = &camera;
-	
-	if (m_FrameIndex == 1)
-		memset(m_AccumulationData, 0, m_FinalImage.SizeInPixels().Width * m_FinalImage.SizeInPixels().Height * sizeof(glm::vec4));
-
-#define MT 1
-#if MT
-	std::for_each(std::execution::par, m_ImageVerticalIter.begin(), m_ImageVerticalIter.end(),
-		[this](uint32_t y)
-		{
-			std::for_each(std::execution::par, m_ImageHorizontalIter.begin(), m_ImageHorizontalIter.end(),
-				[this, y](uint32_t x)
-				{
-					glm::vec4 color = PerPixel(x, y);
-					m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width] += color;
-
-					glm::vec4 accumulatedColor = m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width];
-					accumulatedColor /= (float)m_FrameIndex;
-
-					accumulatedColor = glm::clamp(accumulatedColor, glm::vec4(0.0f), glm::vec4(1.0f));
-					m_ImageData[x + y * m_FinalImage.SizeInPixels().Width] = Utils::ConvertToRGBA(accumulatedColor);
-				});
-		});
-
-#else
-
-	for (uint32_t y = 0; y < m_FinalImage->GetHeight(); y++)
-	{
-		for (uint32_t x = 0; x < m_FinalImage->GetWidth(); x++)
-		{
-			glm::vec4 color = PerPixel(x, y);
-			m_AccumulationData[x + y * m_FinalImage->GetWidth()] += color;
-
-			glm::vec4 accumulatedColor = m_AccumulationData[x + y * m_FinalImage->GetWidth()];
-			accumulatedColor /= (float)m_FrameIndex;
-
-			accumulatedColor = glm::clamp(accumulatedColor, glm::vec4(0.0f), glm::vec4(1.0f));
-			m_ImageData[x + y * m_FinalImage->GetWidth()] = Utils::ConvertToRGBA(accumulatedColor);
-		}
-	}
-#endif
-
-	//	winrt::array_view<uint32_t> view{m_ImageData};
-	//	SetPixelBytes wants an array of bytes, not an array of uint32_ts
-	//m_FinalImage.SetPixelBytes(m_ImageData);
-
-	if (m_Settings.Accumulate)
-		m_FrameIndex++;
-	else
-		m_FrameIndex = 1;
+	m_ActiveCamera = &(scene.GetCamera());
+	std::jthread t{&Renderer::DrawOffScreen, this};
 }
+
+void Renderer::DrawOffScreen()
+{
+	winrt::Butternut::implementation::Random r;
+	r.Init();
+
+	std::vector<winrt::Windows::UI::Color> colors;
+	colors.resize(m_FinalImage.SizeInPixels().Width * m_FinalImage.SizeInPixels().Height);
+	for (auto c : colors)
+	{
+		c = winrt::Microsoft::UI::ColorHelper::FromArgb(255, 128, 0, 128);
+	}
+
+	m_FinalImage.SetPixelColors(colors);
+}
+
+
+//void Renderer::Render(Scene& scene)
+//{
+//	ML_METHOD;
+//	m_ActiveScene = &scene;
+//	m_ActiveCamera = &(scene.GetCamera());
+//	
+//	if (m_FrameIndex == 1)
+//		memset(m_AccumulationData, 0, m_FinalImage.SizeInPixels().Width * m_FinalImage.SizeInPixels().Height * sizeof(glm::vec4));
+//
+//#define MT 1
+//#if MT
+//	std::for_each(std::execution::par, m_ImageVerticalIter.begin(), m_ImageVerticalIter.end(),
+//		[this](uint32_t y)
+//		{
+//			std::for_each(std::execution::par, m_ImageHorizontalIter.begin(), m_ImageHorizontalIter.end(),
+//				[this, y](uint32_t x)
+//				{
+//					glm::vec4 color = PerPixel(x, y);
+//					m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width] += color;
+//
+//					glm::vec4 accumulatedColor = m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width];
+//					accumulatedColor /= (float)m_FrameIndex;
+//
+//					accumulatedColor = glm::clamp(accumulatedColor, glm::vec4(0.0f), glm::vec4(1.0f));
+//					m_ImageData[x + y * m_FinalImage.SizeInPixels().Width] = Utils::ConvertToRGBA(accumulatedColor);
+//				});
+//		});
+//
+//#else
+//
+//	for (uint32_t y = 0; y < m_FinalImage.SizeInPixels().Height; y++)
+//	{
+//		for (uint32_t x = 0; x < m_FinalImage.SizeInPixels().Width; x++)
+//		{
+//			glm::vec4 color = PerPixel(x, y);
+//			m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width] += color;
+//
+//			glm::vec4 accumulatedColor = m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width];
+//			accumulatedColor /= (float)m_FrameIndex;
+//
+//			accumulatedColor = glm::clamp(accumulatedColor, glm::vec4(0.0f), glm::vec4(1.0f));
+////			m_ImageData[x + y * m_FinalImage.SizeInPixels().Width] = Utils::ConvertToRGBA(accumulatedColor);
+//			m_ImageData[x + y * m_FinalImage.SizeInPixels().Width] = Utils::ConvertToBGRA(accumulatedColor);
+//		}
+//	}
+//#endif
+//
+//	//winrt::Windows::Storage::Streams::IBuffer bytes{m_ImageData, winrt::take_ownership_from_abi};
+//	//System.Byte* bytes = (byte*)m_ImageData;
+////	winrt::Windows::UI::Color* colors = (winrt::Windows::UI::Color*) m_ImageData;
+////	m_FinalImage.SetPixelColors((winrt::Windows::UI::Color[])colors);
+//
+//	{
+//		std::vector<byte> bytes;
+//		bytes.resize(m_FinalImage.SizeInPixels().Width * m_FinalImage.SizeInPixels().Height * 4);
+//		memcpy(bytes.data(), m_ImageData, m_FinalImage.SizeInPixels().Width * m_FinalImage.SizeInPixels().Height * 4);
+//		m_FinalImage.SetPixelBytes(bytes);
+//	}
+//
+//	if (m_Settings.Accumulate)
+//		m_FrameIndex++;
+//	else
+//		m_FrameIndex = 1;
+//}
 
 glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 {

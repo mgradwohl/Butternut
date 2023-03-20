@@ -16,6 +16,8 @@
 #include <winrt/Microsoft.Graphics.Canvas.UI.Xaml.h>
 
 #include "fpscounter.h"
+#include "Scene.h"
+#include "Renderer.h"
 
 namespace winrt::Butternut::implementation
 {
@@ -43,7 +45,6 @@ namespace winrt::Butternut::implementation
 
         // starting the game and handling the timer
         void StartGameLoop();
-        winrt::fire_and_forget OnTick(winrt::Microsoft::UI::Dispatching::DispatcherQueueTimer const&, IInspectable const&);
 
         void PumpProperties();
 
@@ -67,6 +68,8 @@ namespace winrt::Butternut::implementation
         winrt::hstring FPSAverage() const;
 
         // event handlers
+        void OnTick(winrt::Microsoft::UI::Dispatching::DispatcherQueueTimer const&, IInspectable const&);
+
         void OnPointerPressed(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e);
         void OnPointerMoved(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e);
         void OnPointerReleased(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e) noexcept;
@@ -84,14 +87,23 @@ namespace winrt::Butternut::implementation
         void SetBestCanvasandWindowSizes();
         void CanvasBoard_Draw(Microsoft::Graphics::Canvas::UI::Xaml::CanvasControl const& sender, Microsoft::Graphics::Canvas::UI::Xaml::CanvasDrawEventArgs const& args);
         void OnFirstRun();
+        int ConvertToPixels(float dips);
 
     private:
         Microsoft::Graphics::Canvas::CanvasDevice _canvasDevice{ nullptr };
+        Timer _timer;
+        Renderer _renderer;
+        Scene _scene;
 
         FPScounter fps{};
         float _dpi{ 0.0f };
 
         PointerMode _PointerMode = PointerMode::None;
+
+        winrt::Microsoft::UI::Dispatching::DispatcherQueueController _controller{ nullptr };
+        winrt::Microsoft::UI::Dispatching::DispatcherQueue _queue{ nullptr };
+        winrt::Microsoft::UI::Dispatching::DispatcherQueueTimer timer{ nullptr };
+        winrt::event_token _eventtoken{ 0 };
 
         winrt::event_token _propertyToken;
         winrt::event<Microsoft::UI::Xaml::Data::PropertyChangedEventHandler> _propertyChanged;

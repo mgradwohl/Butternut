@@ -37,11 +37,14 @@
 #include <wil/cppwinrt.h>
 #include <wil/cppwinrt_helpers.h>
 
-#include "Log.h"
-#include "fpscounter.h"
-
 #include "gsl/gsl"
 #include <glm/gtc/type_ptr.hpp>
+
+#include "Log.h"
+#include "fpscounter.h"
+#include "Scene.h"
+#include "Timer.h"
+#include "Renderer.h"
 
 using namespace winrt;
 namespace winrt::Butternut::implementation
@@ -82,18 +85,51 @@ namespace winrt::Butternut::implementation
 
         // initialize _canvasDevice
         _canvasDevice = Microsoft::Graphics::Canvas::CanvasDevice::GetSharedDevice();
-
     }
+
+    int MainWindow::ConvertToPixels(float dips)
+    {
+		return dips * _dpi / 96.0f;
+	}
 
     void MainWindow::StartGameLoop()
     {
         ML_METHOD;
 
+        _queue = winrt::Microsoft::UI::Dispatching::DispatcherQueue::GetForCurrentThread();
+        timer = _queue.CreateTimer();
+        timer.IsRepeating(true);
+        timer.Interval(std::chrono::milliseconds(1000 / 30));
+        timer.Tick({ get_strong(), &MainWindow::OnTick });
+
+
         // start the FPSCounter
         fps.Start();
 
-        // draw the initial population
-        InvalidateIfNeeded();
+        _timer.Reset();
+        _scene.Init(ConvertToPixels(canvasBoard().Width()), ConvertToPixels(canvasBoard().Height()));
+
+        timer.Start();
+    }
+    void MainWindow::OnTick(winrt::Microsoft::UI::Dispatching::DispatcherQueueTimer const&, IInspectable const&)
+    {
+        ML_METHOD;
+
+        float ts = _timer.ElapsedMillis();
+        _scene.OnUpdate(ts);
+        _renderer.OnResize(_canvasDevice, canvasBoard().Width(), canvasBoard().Height(), _dpi);
+        _renderer.Render(_scene);
+
+        canvasBoard().Invalidate();
+    }
+
+    void MainWindow::CanvasBoard_Draw([[maybe_unused]] Microsoft::Graphics::Canvas::UI::Xaml::CanvasControl  const& sender, Microsoft::Graphics::Canvas::UI::Xaml::CanvasDrawEventArgs const& args)
+    {
+        ML_METHOD;
+        fps.AddFrame();
+//        PumpProperties();
+//        args.DrawingSession().Units(winrt::Microsoft::Graphics::Canvas::CanvasUnits::Pixels);
+        args.DrawingSession().DrawImage(_renderer.GetImage());
     }
 
     void MainWindow::PumpProperties()
@@ -208,12 +244,6 @@ namespace winrt::Butternut::implementation
         {
             appWnd.ResizeClient(Windows::Graphics::SizeInt32{ wndWidth, wndHeight });
         }
-    }
-
-    void MainWindow::CanvasBoard_Draw([[maybe_unused]] Microsoft::Graphics::Canvas::UI::Xaml::CanvasControl  const& sender, Microsoft::Graphics::Canvas::UI::Xaml::CanvasDrawEventArgs const& args)
-    {
-        fps.AddFrame();
-        PumpProperties();
     }
 
     void MainWindow::SetStatus(const std::string& message)

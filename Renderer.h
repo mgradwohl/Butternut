@@ -1,15 +1,13 @@
 #pragma once
 
-#pragma once
-
-#include "Camera.h"
-#include "Ray.h"
-#include "Scene.h"
-
 #include <memory>
 
 #include <winrt/Microsoft.Graphics.Canvas.h>
 #include <glm/glm.hpp>
+
+#include "Camera.h"
+#include "Ray.h"
+#include "Scene.h"
 
 class Renderer
 {
@@ -22,8 +20,10 @@ public:
 public:
 	Renderer() = default;
 
-	void OnResize(uint32_t width, uint32_t height);
-	void Render(const Scene& scene, const Camera& camera);
+	winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget& GetImage();
+
+	void OnResize(winrt::Microsoft::Graphics::Canvas::CanvasDevice& device, uint32_t width, uint32_t height, float dpi);
+	void Render(Scene& scene);
 
 	winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget& GetFinalImage() { return m_FinalImage; }
 
@@ -40,6 +40,7 @@ private:
 		int ObjectIndex;
 	};
 
+	void DrawOffScreen();
 	glm::vec4 PerPixel(uint32_t x, uint32_t y); // RayGen
 
 	HitPayload TraceRay(const Ray& ray);

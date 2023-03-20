@@ -20,6 +20,11 @@ namespace winrt::Butternut::implementation
 			return s_Distribution(s_RandomEngine);
 		}
 
+		static uint8_t Byte()
+		{
+			return s_Distribution(s_RandomEngine);
+		}
+
 		static uint32_t UInt(uint32_t min, uint32_t max)
 		{
 			return min + (s_Distribution(s_RandomEngine) % (max - min + 1));
