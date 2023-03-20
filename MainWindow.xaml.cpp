@@ -85,6 +85,8 @@ namespace winrt::Butternut::implementation
 
         // initialize _canvasDevice
         _canvasDevice = Microsoft::Graphics::Canvas::CanvasDevice::GetSharedDevice();
+
+        SetBestCanvasandWindowSizes();
     }
 
     int MainWindow::ConvertToPixels(float dips)
@@ -127,8 +129,7 @@ namespace winrt::Butternut::implementation
     {
         ML_METHOD;
         fps.AddFrame();
-//        PumpProperties();
-//        args.DrawingSession().Units(winrt::Microsoft::Graphics::Canvas::CanvasUnits::Pixels);
+        PumpProperties();
         args.DrawingSession().DrawImage(_renderer.GetImage());
     }
 
@@ -226,18 +227,15 @@ namespace winrt::Butternut::implementation
         Microsoft::UI::Windowing::DisplayArea displayArea = Microsoft::UI::Windowing::DisplayArea::GetFromWindowId(idWnd, Microsoft::UI::Windowing::DisplayAreaFallback::Nearest);
         const Windows::Graphics::RectInt32 rez = displayArea.OuterBounds();
 
-        // have the renderer figure out the best canvas size, which initializes CanvasSize
-        // TODO on WindowResize should call the below
-        //_renderer.FindBestCanvasSize(rez.Height);
-
         // setup offsets for sensible default window size
         constexpr int border = 20; // from XAML TODO can we call 'measure' and just retrieve the border width?
         constexpr int stackpanelwidth = 200; // from XAML TODO can we call 'measure' and just retrieve the stackpanel width?
         constexpr int statusheight = 28;
 
         // ResizeClient wants pixels, not DIPs
-        const int wndWidth = 800;
-        const int wndHeight = 600;
+
+        const int wndWidth = gsl::narrow_cast<int>((canvasBoard().Width() + stackpanelwidth + border) * _dpi / 96.0f);
+        const int wndHeight = gsl::narrow_cast<int>((canvasBoard().Height() + border + statusheight) * _dpi / 96.0f);
 
         // resize the window
         if (auto appWnd = Microsoft::UI::Windowing::AppWindow::GetFromWindowId(idWnd); appWnd)

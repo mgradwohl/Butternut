@@ -49,15 +49,13 @@ private:
 
 private:
 	winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget m_FinalImage{nullptr};
-	Settings m_Settings;
-
+	std::vector<winrt::Windows::UI::Color> m_ImageData;
 	std::vector<uint32_t> m_ImageHorizontalIter, m_ImageVerticalIter;
+	std::vector<glm::vec4> m_AccumulationData;
 
 	const Scene* m_ActiveScene = nullptr;
 	const Camera* m_ActiveCamera = nullptr;
 
-	uint32_t* m_ImageData = nullptr;
-	glm::vec4* m_AccumulationData = nullptr;
-
+	Settings m_Settings;
 	uint32_t m_FrameIndex = 1;
 };
