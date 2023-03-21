@@ -12,7 +12,7 @@ Scene::Scene()
     : _camera(45.0f, 0.1f, 100.0f)
 {
     Material& pinkSphere = Materials.emplace_back();
-    pinkSphere.Albedo = { 1.0f, 0.0f, 1.0f };
+    pinkSphere.Albedo = { 0.0f, 0.6f, 0.6f };
     pinkSphere.Roughness = 0.0f;
 
     Material& blueSphere = Materials.emplace_back();

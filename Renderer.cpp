@@ -14,6 +14,8 @@
 #include <execution>
 #include <vector>
 
+#include<gsl/gsl>
+
 #include "Random.h"
 #include "Log.h"
 
@@ -59,6 +61,7 @@ winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget& Renderer::GetImage()
 
 void Renderer::OnResize(winrt::Microsoft::Graphics::Canvas::CanvasDevice& device, uint32_t width, uint32_t height, float dpi)
 {
+	ML_METHOD;
 	if (m_FinalImage)
 	{
 		// No resize necessary
@@ -117,38 +120,39 @@ void Renderer::Render(Scene& scene)
 	if (m_FrameIndex == 1)
 	{
 		memset(m_AccumulationData.data(), 0, m_FinalImage.SizeInPixels().Width * m_FinalImage.SizeInPixels().Height * sizeof(glm::vec4));
+		ML_TRACE("Resetting FrameIndex\n");
 	}
 
-	int _threadcount = 100;// gsl::narrow_cast<int>(std::thread::hardware_concurrency() - 1);
-	int rowStart = 0;
-	const auto rowsPerThread = gsl::narrow_cast<uint16_t>(m_FinalImage.SizeInPixels().Height / _threadcount);
-	const auto remainingRows = gsl::narrow_cast<uint16_t>(m_FinalImage.SizeInPixels().Height % _threadcount);
+	//int _threadcount = 200;// gsl::narrow_cast<int>(std::thread::hardware_concurrency() - 1);
+	//int rowStart = 0;
+	//const auto rowsPerThread = gsl::narrow_cast<uint16_t>(m_FinalImage.SizeInPixels().Height / _threadcount);
+	//const auto remainingRows = gsl::narrow_cast<uint16_t>(m_FinalImage.SizeInPixels().Height % _threadcount);
 
-	std::vector<std::jthread> threads;
-	for (int t = 0; t < _threadcount - 1; t++)
-	{
-		threads.emplace_back(std::jthread{ &Renderer::UpdateThread, this, rowStart, gsl::narrow_cast<uint16_t>(rowStart + rowsPerThread)});
-		rowStart += rowsPerThread;
-	}
-	threads.emplace_back(std::jthread{ &Renderer::UpdateThread, this, rowStart, gsl::narrow_cast<uint16_t>(rowStart + rowsPerThread + remainingRows)});
+	//std::vector<std::jthread> threads;
+	//for (int t = 0; t < _threadcount - 1; t++)
+	//{
+	//	threads.emplace_back(std::jthread{ &Renderer::UpdateThread, this, rowStart, gsl::narrow_cast<uint16_t>(rowStart + rowsPerThread)});
+	//	rowStart += rowsPerThread;
+	//}
+	//threads.emplace_back(std::jthread{ &Renderer::UpdateThread, this, rowStart, gsl::narrow_cast<uint16_t>(rowStart + rowsPerThread + remainingRows)});
 
 	 //Original Cherno Code this is the super slow part
-	//std::for_each(std::execution::par, m_ImageVerticalIter.begin(), m_ImageVerticalIter.end(),
-	//	[this](uint32_t y)
-	//	{
-	//		std::for_each(std::execution::seq, m_ImageHorizontalIter.begin(), m_ImageHorizontalIter.end(),
-	//			[this, y](uint32_t x)
-	//			{
-	//				glm::vec4 color = PerPixel(x, y);
-	//				m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width] += color;
+	std::for_each(std::execution::par, m_ImageVerticalIter.begin(), m_ImageVerticalIter.end(),
+		[this](uint32_t y)
+		{
+			std::for_each(std::execution::seq, m_ImageHorizontalIter.begin(), m_ImageHorizontalIter.end(),
+				[this, y](uint32_t x)
+				{
+					glm::vec4 color = PerPixel(x, y);
+					m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width] += color;
 
-	//				glm::vec4 accumulatedColor = m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width];
-	//				accumulatedColor /= (float)m_FrameIndex;
+					glm::vec4 accumulatedColor = m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width];
+					accumulatedColor /= (float)m_FrameIndex;
 
-	//				accumulatedColor = glm::clamp(accumulatedColor, glm::vec4(0.0f), glm::vec4(1.0f));
-	//				m_ImageData[x + y * m_FinalImage.SizeInPixels().Width] = Utils::ConvertToColor(accumulatedColor);
-	//			});
-	//	});
+					accumulatedColor = glm::clamp(accumulatedColor, glm::vec4(0.0f), glm::vec4(1.0f));
+					m_ImageData[x + y * m_FinalImage.SizeInPixels().Width] = Utils::ConvertToColor(accumulatedColor);
+				});
+		});
 
 	winrt::array_view<winrt::Windows::UI::Color> view{ m_ImageData };
 	m_FinalImage.SetPixelColors(view);
@@ -156,6 +160,8 @@ void Renderer::Render(Scene& scene)
 		m_FrameIndex++;
 	else
 		m_FrameIndex = 1;
+	ML_TRACE("FrameIndex {}\n", m_FrameIndex);
+
 }
 
 glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
@@ -168,7 +174,7 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 	glm::vec3 skyColor = glm::vec3(0.6f, 0.7f, 0.9f);
 	float multiplier = 1.0f;
 
-	int bounces = 3;
+	int bounces = 5;
 	for (int i = 0; i < bounces; i++)
 	{
 		Renderer::HitPayload payload = TraceRay(ray);

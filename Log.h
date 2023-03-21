@@ -8,8 +8,8 @@
 
 #define SPDLOG_USE_STD_FORMAT
 
-#include "spdlog/spdlog.h"
-#include "spdlog/fmt/ostr.h"
+#include <spdlog/spdlog.h>
+#include <spdlog/fmt/ostr.h>
 
 namespace Util
 {
