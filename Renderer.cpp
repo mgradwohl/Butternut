@@ -71,7 +71,9 @@ void Renderer::OnResize(winrt::Microsoft::Graphics::Canvas::CanvasDevice& device
 		float h = height;
 
 		m_FinalImage = winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget(device, w, h, dpi);// , winrt::Microsoft::Graphics::DirectX::DirectXPixelFormat::R8G8B8A8UInt, winrt::Microsoft::Graphics::Canvas::CanvasAlphaMode::Straight );
-		m_FinalImage.CreateDrawingSession().Transform(winrt::Windows::Foundation::Numerics::make_float3x2_scale(1.0f, -1.0f));
+		// TODO this does not make the image right side up
+		// best to just draw it right side up
+		//m_FinalImage.CreateDrawingSession().Transform(winrt::Windows::Foundation::Numerics::make_float3x2_scale(1.0f, -1.0f));
 	}
 
 	uint32_t w = m_FinalImage.SizeInPixels().Width;
@@ -90,10 +92,11 @@ void Renderer::OnResize(winrt::Microsoft::Graphics::Canvas::CanvasDevice& device
 
 void Renderer::UpdateThread(uint32_t start, uint32_t end)
 {
-	for (uint32_t y = start; y < end; y++)
+	for (uint32_t y = end; y > start; y++)
 	{
-		for (uint32_t x = 0; x < m_FinalImage.SizeInPixels().Width; x++)
-		{
+//		for (uint32_t x = 0; x < m_FinalImage.SizeInPixels().Width; x++)
+			for (uint32_t x = 0; x < m_FinalImage.SizeInPixels().Width; x++)
+			{
 			glm::vec4 color = PerPixel(x, y);
 			m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width] += color;
 
@@ -117,37 +120,36 @@ void Renderer::Render(Scene& scene)
 		memset(m_AccumulationData.data(), 0, m_FinalImage.SizeInPixels().Width * m_FinalImage.SizeInPixels().Height * sizeof(glm::vec4));
 	}
 
-	//int _threadcount = gsl::narrow_cast<int>(std::thread::hardware_concurrency() - 1);
-	//int rowStart = 0;
-	//const auto rowsPerThread = gsl::narrow_cast<uint16_t>(m_FinalImage.SizeInPixels().Height / _threadcount);
-	//const auto remainingRows = gsl::narrow_cast<uint16_t>(m_FinalImage.SizeInPixels().Height % _threadcount);
+	int _threadcount = 100;// gsl::narrow_cast<int>(std::thread::hardware_concurrency() - 1);
+	int rowStart = 0;
+	const auto rowsPerThread = gsl::narrow_cast<uint16_t>(m_FinalImage.SizeInPixels().Height / _threadcount);
+	const auto remainingRows = gsl::narrow_cast<uint16_t>(m_FinalImage.SizeInPixels().Height % _threadcount);
 
-	//std::vector<std::jthread> threads;
-	//for (int t = 0; t < _threadcount - 1; t++)
-	//{
-	//	threads.emplace_back(std::jthread{ &Renderer::UpdateThread, this, rowStart, gsl::narrow_cast<uint16_t>(rowStart + rowsPerThread)});
-	//	rowStart += rowsPerThread;
-
-	//}
-	//threads.emplace_back(std::jthread{ &Renderer::UpdateThread, this, rowStart, gsl::narrow_cast<uint16_t>(rowStart + rowsPerThread + remainingRows)});
+	std::vector<std::jthread> threads;
+	for (int t = 0; t < _threadcount - 1; t++)
+	{
+		threads.emplace_back(std::jthread{ &Renderer::UpdateThread, this, rowStart, gsl::narrow_cast<uint16_t>(rowStart + rowsPerThread)});
+		rowStart += rowsPerThread;
+	}
+	threads.emplace_back(std::jthread{ &Renderer::UpdateThread, this, rowStart, gsl::narrow_cast<uint16_t>(rowStart + rowsPerThread + remainingRows)});
 
 	 //Original Cherno Code this is the super slow part
-	std::for_each(std::execution::par, m_ImageVerticalIter.begin(), m_ImageVerticalIter.end(),
-		[this](uint32_t y)
-		{
-			std::for_each(std::execution::seq, m_ImageHorizontalIter.begin(), m_ImageHorizontalIter.end(),
-				[this, y](uint32_t x)
-				{
-					glm::vec4 color = PerPixel(x, y);
-					m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width] += color;
+	//std::for_each(std::execution::par, m_ImageVerticalIter.begin(), m_ImageVerticalIter.end(),
+	//	[this](uint32_t y)
+	//	{
+	//		std::for_each(std::execution::seq, m_ImageHorizontalIter.begin(), m_ImageHorizontalIter.end(),
+	//			[this, y](uint32_t x)
+	//			{
+	//				glm::vec4 color = PerPixel(x, y);
+	//				m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width] += color;
 
-					glm::vec4 accumulatedColor = m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width];
-					accumulatedColor /= (float)m_FrameIndex;
+	//				glm::vec4 accumulatedColor = m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width];
+	//				accumulatedColor /= (float)m_FrameIndex;
 
-					accumulatedColor = glm::clamp(accumulatedColor, glm::vec4(0.0f), glm::vec4(1.0f));
-					m_ImageData[x + y * m_FinalImage.SizeInPixels().Width] = Utils::ConvertToColor(accumulatedColor);
-				});
-		});
+	//				accumulatedColor = glm::clamp(accumulatedColor, glm::vec4(0.0f), glm::vec4(1.0f));
+	//				m_ImageData[x + y * m_FinalImage.SizeInPixels().Width] = Utils::ConvertToColor(accumulatedColor);
+	//			});
+	//	});
 
 	winrt::array_view<winrt::Windows::UI::Color> view{ m_ImageData };
 	m_FinalImage.SetPixelColors(view);
