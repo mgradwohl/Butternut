@@ -115,7 +115,7 @@ void Renderer::Render(Scene& scene)
 	ML_METHOD;
 	m_ActiveScene = &scene;
 	m_ActiveCamera = &(scene.GetCamera());
-	glm::vec4 skyColor = glm::vec4(1.0f,0.6f, 0.7f, 0.9f);
+	constexpr glm::vec4 skyColor = glm::vec4(1.0f,0.6f, 0.7f, 0.9f);
 
 	if (m_FrameIndex == 1)
 	{
@@ -144,13 +144,17 @@ void Renderer::Render(Scene& scene)
 				[this, y](uint32_t x)
 				{
 					glm::vec4 color = PerPixel(x, y);
-					m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width] += color;
+					m_AccumulationData[x + (m_FinalImage.SizeInPixels().Height - y -1) * m_FinalImage.SizeInPixels().Width] += color;
 
-					glm::vec4 accumulatedColor = m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width];
-					accumulatedColor /= (float)m_FrameIndex;
+					//glm::vec4 accumulatedColor = m_AccumulationData[x + (m_FinalImage.SizeInPixels().Height - y - 1) * m_FinalImage.SizeInPixels().Width];
+					//accumulatedColor /= (float)m_FrameIndex;
+					//accumulatedColor = glm::clamp(accumulatedColor, glm::vec4(0.0f), glm::vec4(1.0f));
+					//m_ImageData[x + (m_FinalImage.SizeInPixels().Height - y - 1) * m_FinalImage.SizeInPixels().Width] = Utils::ConvertToColor(accumulatedColor);
+					color = m_AccumulationData[x + (m_FinalImage.SizeInPixels().Height - y -1) * m_FinalImage.SizeInPixels().Width];
+					color /= (float)m_FrameIndex;
 
-					accumulatedColor = glm::clamp(accumulatedColor, glm::vec4(0.0f), glm::vec4(1.0f));
-					m_ImageData[x + y * m_FinalImage.SizeInPixels().Width] = Utils::ConvertToColor(accumulatedColor);
+					color = glm::clamp(color, glm::vec4(0.0f), glm::vec4(1.0f));
+					m_ImageData[x + (m_FinalImage.SizeInPixels().Height - y - 1) * m_FinalImage.SizeInPixels().Width] = Utils::ConvertToColor(color);
 				});
 		});
 
@@ -171,8 +175,9 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 	ray.Direction = m_ActiveCamera->GetRayDirections()[x + y * m_FinalImage.SizeInPixels().Width];
 	
 	glm::vec3 color(0.0f);
-	glm::vec3 skyColor = glm::vec3(0.6f, 0.7f, 0.9f);
+	constexpr glm::vec3 skyColor = glm::vec3(0.6f, 0.7f, 0.9f);
 	float multiplier = 1.0f;
+	const glm::vec3 lightDir = glm::normalize(glm::vec3(-1, -1, -1));
 
 	int bounces = 5;
 	for (int i = 0; i < bounces; i++)
@@ -184,9 +189,7 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 			break;
 		}
 
-		glm::vec3 lightDir = glm::normalize(glm::vec3(-1, -1, -1));
-		float lightIntensity = glm::max(glm::dot(payload.WorldNormal, -lightDir), 0.0f); // == cos(angle)
-
+		const float lightIntensity = glm::max(glm::dot(payload.WorldNormal, -lightDir), 0.0f); // == cos(angle)
 		const Sphere& sphere = m_ActiveScene->Spheres[payload.ObjectIndex];
 		const Material& material = m_ActiveScene->Materials[sphere.MaterialIndex];
 
@@ -219,14 +222,14 @@ Renderer::HitPayload Renderer::TraceRay(const Ray& ray)
 		const Sphere& sphere = m_ActiveScene->Spheres[i];
 		glm::vec3 origin = ray.Origin - sphere.Position;
 
-		float a = glm::dot(ray.Direction, ray.Direction);
-		float b = 2.0f * glm::dot(origin, ray.Direction);
-		float c = glm::dot(origin, origin) - sphere.Radius * sphere.Radius;
+		const float a = glm::dot(ray.Direction, ray.Direction);
+		const float b = 2.0f * glm::dot(origin, ray.Direction);
+		const float c = glm::dot(origin, origin) - sphere.Radius * sphere.Radius;
 
 		// Quadratic forumula discriminant:
 		// b^2 - 4ac
 
-		float discriminant = b * b - 4.0f * a * c;
+		const float discriminant = b * b - 4.0f * a * c;
 		if (discriminant < 0.0f)
 			continue;
 
@@ -234,7 +237,7 @@ Renderer::HitPayload Renderer::TraceRay(const Ray& ray)
 		// (-b +- sqrt(discriminant)) / 2a
 
 		// float t0 = (-b + glm::sqrt(discriminant)) / (2.0f * a); // Second hit distance (currently unused)
-		float closestT = (-b - glm::sqrt(discriminant)) / (2.0f * a);
+		const float closestT = (-b - glm::sqrt(discriminant)) / (2.0f * a);
 		if (closestT > 0.0f && closestT < hitDistance)
 		{
 			hitDistance = closestT;

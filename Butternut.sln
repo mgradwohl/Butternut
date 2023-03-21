@@ -10,6 +10,9 @@ Global
 		Debug|ARM64 = Debug|ARM64
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release Test|ARM64 = Release Test|ARM64
+		Release Test|x64 = Release Test|x64
+		Release Test|x86 = Release Test|x86
 		Release|ARM64 = Release|ARM64
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
@@ -24,6 +27,15 @@ Global
 		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Debug|x86.ActiveCfg = Debug|Win32
 		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Debug|x86.Build.0 = Debug|Win32
 		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Debug|x86.Deploy.0 = Debug|Win32
+		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Release Test|ARM64.ActiveCfg = Release Test|ARM64
+		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Release Test|ARM64.Build.0 = Release Test|ARM64
+		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Release Test|ARM64.Deploy.0 = Release Test|ARM64
+		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Release Test|x64.ActiveCfg = Release Test|x64
+		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Release Test|x64.Build.0 = Release Test|x64
+		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Release Test|x64.Deploy.0 = Release Test|x64
+		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Release Test|x86.ActiveCfg = Release Test|Win32
+		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Release Test|x86.Build.0 = Release Test|Win32
+		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Release Test|x86.Deploy.0 = Release Test|Win32
 		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Release|ARM64.ActiveCfg = Release|ARM64
 		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Release|ARM64.Build.0 = Release|ARM64
 		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Release|ARM64.Deploy.0 = Release|ARM64

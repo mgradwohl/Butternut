@@ -101,7 +101,7 @@ namespace winrt::Butternut::implementation
         _queue = winrt::Microsoft::UI::Dispatching::DispatcherQueue::GetForCurrentThread();
         timer = _queue.CreateTimer();
         timer.IsRepeating(true);
-        timer.Interval(std::chrono::milliseconds(1000 / 60));
+        timer.Interval(std::chrono::milliseconds(1000 / 30));
         timer.Tick({ get_strong(), &MainWindow::OnTick });
 
 
@@ -120,12 +120,15 @@ namespace winrt::Butternut::implementation
         float ts = _frametimer.ElapsedMillis();
         _scene.OnUpdate(ts);
         _renderer.OnResize(_canvasDevice, canvasBoard().Width(), canvasBoard().Height(), _dpi);
-        _renderer.Render(_scene);
+        if (!_closing)
+        {
+            _renderer.Render(_scene);
+            canvasBoard().Invalidate();
+        }
         ML_TRACE("Last frame took {}ms", ts - _lastFrameTime);
-        //std::string status = std::format("Last frame time {}ms", ts);
         SetStatus(std::format("Last frame time {}ms", ts - _lastFrameTime));
+
         _lastFrameTime = ts;
-        canvasBoard().Invalidate();
     }
 
     void MainWindow::CanvasBoard_Draw([[maybe_unused]] Microsoft::Graphics::Canvas::UI::Xaml::CanvasControl  const& sender, Microsoft::Graphics::Canvas::UI::Xaml::CanvasDrawEventArgs const& args)
@@ -401,6 +404,7 @@ namespace winrt::Butternut::implementation
     void MainWindow::OnWindowClosed([[maybe_unused]] IInspectable const& sender, [[maybe_unused]] winrt::Microsoft::UI::Xaml::WindowEventArgs const& args) noexcept
     {
         ML_METHOD;
+        _closing = true;
         //timer.Revoke();
         Util::Log::Shutdown();
         //PropertyChangedRevoker();

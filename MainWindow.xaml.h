@@ -101,6 +101,8 @@ namespace winrt::Butternut::implementation
 
         PointerMode _PointerMode = PointerMode::None;
 
+        bool _closing = false;
+
         winrt::Microsoft::UI::Dispatching::DispatcherQueueController _controller{ nullptr };
         winrt::Microsoft::UI::Dispatching::DispatcherQueue _queue{ nullptr };
         winrt::Microsoft::UI::Dispatching::DispatcherQueueTimer timer{ nullptr };
