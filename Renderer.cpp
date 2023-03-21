@@ -92,11 +92,10 @@ void Renderer::OnResize(winrt::Microsoft::Graphics::Canvas::CanvasDevice& device
 
 void Renderer::UpdateThread(uint32_t start, uint32_t end)
 {
-	for (uint32_t y = end; y > start; y++)
+	for (uint32_t y = start; y < end; y++)
 	{
-//		for (uint32_t x = 0; x < m_FinalImage.SizeInPixels().Width; x++)
-			for (uint32_t x = 0; x < m_FinalImage.SizeInPixels().Width; x++)
-			{
+		for (uint32_t x = 0; x < m_FinalImage.SizeInPixels().Width; x++)
+		{
 			glm::vec4 color = PerPixel(x, y);
 			m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width] += color;
 
