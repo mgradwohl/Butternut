@@ -2,6 +2,8 @@
 
 #include "Renderer.h"
 
+#include <winrt/Windows.Foundation.Numerics.h>
+#include <WindowsNumerics.h>
 #include <winrt/Microsoft.UI.h>
 #include "winrt/Windows.UI.h"
 #include <winrt/Microsoft.Graphics.Canvas.h>
@@ -16,18 +18,6 @@
 #include "Log.h"
 
 namespace Utils {
-
-	static uint32_t ConvertToRGBA(const glm::vec4& color)
-	{
-		uint8_t r = (uint8_t)(color.r * 255.0f);
-		uint8_t g = (uint8_t)(color.g * 255.0f);
-		uint8_t b = (uint8_t)(color.b * 255.0f);
-		uint8_t a = (uint8_t)(color.a * 255.0f);
-
-		uint32_t result = (a << 24) | (b << 16) | (g << 8) | r;
-		return result;
-	}
-
 	static winrt::Windows::UI::Color ConvertToColor(const glm::vec4& color)
 	{
 		uint8_t r = (uint8_t)(color.r * 255.0f);
@@ -38,16 +28,28 @@ namespace Utils {
 		return winrt::Microsoft::UI::ColorHelper::FromArgb(a, r, g, b);
 	}
 
-	static uint32_t ConvertToBGRA(const glm::vec4& color)
-	{
-		uint8_t r = (uint8_t)(color.r * 255.0f);
-		uint8_t g = (uint8_t)(color.g * 255.0f);
-		uint8_t b = (uint8_t)(color.b * 255.0f);
-		uint8_t a = (uint8_t)(color.a * 255.0f);
+	//static uint32_t ConvertToRGBA(const glm::vec4& color)
+	//{
+	//	uint8_t r = (uint8_t)(color.r * 255.0f);
+	//	uint8_t g = (uint8_t)(color.g * 255.0f);
+	//	uint8_t b = (uint8_t)(color.b * 255.0f);
+	//	uint8_t a = (uint8_t)(color.a * 255.0f);
 
-		uint32_t result = (b << 24) | (g << 16) | (r << 8) | a;
-		return result;
-	}
+	//	uint32_t result = (a << 24) | (b << 16) | (g << 8) | r;
+	//	return result;
+	//}
+
+
+	//static uint32_t ConvertToBGRA(const glm::vec4& color)
+	//{
+	//	uint8_t r = (uint8_t)(color.r * 255.0f);
+	//	uint8_t g = (uint8_t)(color.g * 255.0f);
+	//	uint8_t b = (uint8_t)(color.b * 255.0f);
+	//	uint8_t a = (uint8_t)(color.a * 255.0f);
+
+	//	uint32_t result = (b << 24) | (g << 16) | (r << 8) | a;
+	//	return result;
+	//}
 }
 
 winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget& Renderer::GetImage()
@@ -69,6 +71,7 @@ void Renderer::OnResize(winrt::Microsoft::Graphics::Canvas::CanvasDevice& device
 		float h = height;
 
 		m_FinalImage = winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget(device, w, h, dpi);// , winrt::Microsoft::Graphics::DirectX::DirectXPixelFormat::R8G8B8A8UInt, winrt::Microsoft::Graphics::Canvas::CanvasAlphaMode::Straight );
+		m_FinalImage.CreateDrawingSession().Transform(winrt::Windows::Foundation::Numerics::make_float3x2_scale(1.0f, -1.0f));
 	}
 
 	uint32_t w = m_FinalImage.SizeInPixels().Width;
@@ -85,30 +88,23 @@ void Renderer::OnResize(winrt::Microsoft::Graphics::Canvas::CanvasDevice& device
 		m_ImageVerticalIter[i] = i;
 }
 
-//void Renderer::Render(Scene& scene)
-//{
-//	ML_METHOD;
-//	m_ActiveScene = &scene;
-//	m_ActiveCamera = &(scene.GetCamera());
-//	std::jthread t{&Renderer::DrawOffScreen, this};
-//}
-//
-//void Renderer::DrawOffScreen()
-//{
-//	winrt::Butternut::implementation::Random rando;
-//	rando.Init();
-//
-//	std::vector<winrt::Windows::UI::Color> colors;
-//	colors.resize(m_FinalImage.SizeInPixels().Width * m_FinalImage.SizeInPixels().Height);
-//	for (auto& c : colors)
-//	{
-//		c = winrt::Microsoft::UI::ColorHelper::FromArgb(255, rando.Byte(), rando.Byte(), rando.Byte());
-//	}
-//
-//	winrt::array_view<winrt::Windows::UI::Color> view{ colors };
-//	m_FinalImage.SetPixelColors(colors);
-//}
+void Renderer::UpdateThread(uint32_t start, uint32_t end)
+{
+	for (uint32_t y = start; y < end; y++)
+	{
+		for (uint32_t x = 0; x < m_FinalImage.SizeInPixels().Width; x++)
+		{
+			glm::vec4 color = PerPixel(x, y);
+			m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width] += color;
 
+			glm::vec4 accumulatedColor = m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width];
+			accumulatedColor /= (float)m_FrameIndex;
+
+			accumulatedColor = glm::clamp(accumulatedColor, glm::vec4(0.0f), glm::vec4(1.0f));
+			m_ImageData[x + y * m_FinalImage.SizeInPixels().Width] = Utils::ConvertToColor(accumulatedColor);
+		}
+	}
+}
 void Renderer::Render(Scene& scene)
 {
 	ML_METHOD;
@@ -116,15 +112,26 @@ void Renderer::Render(Scene& scene)
 	m_ActiveCamera = &(scene.GetCamera());
 	glm::vec4 skyColor = glm::vec4(1.0f,0.6f, 0.7f, 0.9f);
 
-	m_FinalImage.CreateDrawingSession().Clear(Utils::ConvertToColor(skyColor));
-	
 	if (m_FrameIndex == 1)
 	{
 		memset(m_AccumulationData.data(), 0, m_FinalImage.SizeInPixels().Width * m_FinalImage.SizeInPixels().Height * sizeof(glm::vec4));
 	}
 
-#define MT 1
-#if MT
+	//int _threadcount = gsl::narrow_cast<int>(std::thread::hardware_concurrency() - 1);
+	//int rowStart = 0;
+	//const auto rowsPerThread = gsl::narrow_cast<uint16_t>(m_FinalImage.SizeInPixels().Height / _threadcount);
+	//const auto remainingRows = gsl::narrow_cast<uint16_t>(m_FinalImage.SizeInPixels().Height % _threadcount);
+
+	//std::vector<std::jthread> threads;
+	//for (int t = 0; t < _threadcount - 1; t++)
+	//{
+	//	threads.emplace_back(std::jthread{ &Renderer::UpdateThread, this, rowStart, gsl::narrow_cast<uint16_t>(rowStart + rowsPerThread)});
+	//	rowStart += rowsPerThread;
+
+	//}
+	//threads.emplace_back(std::jthread{ &Renderer::UpdateThread, this, rowStart, gsl::narrow_cast<uint16_t>(rowStart + rowsPerThread + remainingRows)});
+
+	 //Original Cherno Code this is the super slow part
 	std::for_each(std::execution::par, m_ImageVerticalIter.begin(), m_ImageVerticalIter.end(),
 		[this](uint32_t y)
 		{
@@ -142,28 +149,8 @@ void Renderer::Render(Scene& scene)
 				});
 		});
 
-#else
-
-	for (uint32_t y = 0; y < m_FinalImage.SizeInPixels().Height; y++)
-	{
-		for (uint32_t x = 0; x < m_FinalImage.SizeInPixels().Width; x++)
-		{
-			glm::vec4 color = PerPixel(x, y);
-			m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width] += color;
-
-			glm::vec4 accumulatedColor = m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width];
-			accumulatedColor /= (float)m_FrameIndex;
-
-			accumulatedColor = glm::clamp(accumulatedColor, glm::vec4(0.0f), glm::vec4(1.0f));
-//			m_ImageData[x + y * m_FinalImage.SizeInPixels().Width] = Utils::ConvertToRGBA(accumulatedColor);
-			m_ImageData[x + y * m_FinalImage.SizeInPixels().Width] = Utils::ConvertToBGRA(accumulatedColor);
-		}
-	}
-#endif
-
 	winrt::array_view<winrt::Windows::UI::Color> view{ m_ImageData };
 	m_FinalImage.SetPixelColors(view);
-
 	if (m_Settings.Accumulate)
 		m_FrameIndex++;
 	else
@@ -206,7 +193,6 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 		ray.Direction = glm::reflect(ray.Direction,
 			payload.WorldNormal + material.Roughness * winrt::Butternut::implementation::Random::Vec3(-0.5f, 0.5f));
 	}
-	//return winrt::Microsoft::UI::ColorHelper::FromArgb(255, color.r, color.g, color.b);
 	return glm::vec4(color, 1.0f);
 }
 

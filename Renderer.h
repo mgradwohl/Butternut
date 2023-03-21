@@ -40,7 +40,7 @@ private:
 		int ObjectIndex;
 	};
 
-	void DrawOffScreen();
+	void UpdateThread(uint32_t start, uint32_t end);
 	glm::vec4 PerPixel(uint32_t x, uint32_t y); // RayGen
 
 	HitPayload TraceRay(const Ray& ray);

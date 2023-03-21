@@ -91,12 +91,13 @@ namespace winrt::Butternut::implementation
 
     private:
         Microsoft::Graphics::Canvas::CanvasDevice _canvasDevice{ nullptr };
-        Timer _timer;
+        Timer _frametimer;
         Renderer _renderer;
         Scene _scene;
 
         FPScounter fps{};
         float _dpi{ 0.0f };
+        float _lastFrameTime{ 0 };
 
         PointerMode _PointerMode = PointerMode::None;
 

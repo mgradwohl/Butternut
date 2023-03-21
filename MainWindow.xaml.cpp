@@ -101,14 +101,14 @@ namespace winrt::Butternut::implementation
         _queue = winrt::Microsoft::UI::Dispatching::DispatcherQueue::GetForCurrentThread();
         timer = _queue.CreateTimer();
         timer.IsRepeating(true);
-        timer.Interval(std::chrono::milliseconds(1000 / 30));
+        timer.Interval(std::chrono::milliseconds(1000 / 60));
         timer.Tick({ get_strong(), &MainWindow::OnTick });
 
 
         // start the FPSCounter
         fps.Start();
 
-        _timer.Reset();
+        _frametimer.Reset();
         _scene.Init(ConvertToPixels(canvasBoard().Width()), ConvertToPixels(canvasBoard().Height()));
 
         timer.Start();
@@ -117,11 +117,14 @@ namespace winrt::Butternut::implementation
     {
         ML_METHOD;
 
-        float ts = _timer.ElapsedMillis();
+        float ts = _frametimer.ElapsedMillis();
         _scene.OnUpdate(ts);
         _renderer.OnResize(_canvasDevice, canvasBoard().Width(), canvasBoard().Height(), _dpi);
         _renderer.Render(_scene);
-
+        ML_TRACE("Last frame took {}ms", ts - _lastFrameTime);
+        //std::string status = std::format("Last frame time {}ms", ts);
+        SetStatus(std::format("Last frame time {}ms", ts - _lastFrameTime));
+        _lastFrameTime = ts;
         canvasBoard().Invalidate();
     }
 
