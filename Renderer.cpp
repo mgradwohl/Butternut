@@ -182,10 +182,9 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 	const glm::vec3 lightDir = glm::normalize(glm::vec3(-1, -1, 1));
 
 	int bounces = 5;
-	Renderer::HitPayload payload;// = TraceRay(ray);
 	for (int i = 0; i < bounces; i++)
 	{
-		payload = TraceRay(ray);
+		Renderer::HitPayload payload = TraceRay(ray);
 		if (payload.HitDistance < 0.0f)
 		{
 			color += skyColor * multiplier;
