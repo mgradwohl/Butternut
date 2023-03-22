@@ -140,7 +140,7 @@ namespace winrt::Butternut::implementation
         ML_TRACE("Last frame took {}ms", ts - _lastFrameTime);
         SetStatus(std::format("Last frame time {}ms", ts - _lastFrameTime));
         _lastFrameTime = ts;
-        //PumpProperties();
+        PumpProperties();
 
     }
 
