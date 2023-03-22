@@ -21,12 +21,12 @@
 namespace Utils {
 	static winrt::Windows::UI::Color ConvertToColor(const glm::vec4& color)
 	{
-		uint8_t r = (uint8_t)(color.r * 255.0f);
-		uint8_t g = (uint8_t)(color.g * 255.0f);
-		uint8_t b = (uint8_t)(color.b * 255.0f);
-		uint8_t a = (uint8_t)(color.a * 255.0f);
+		//uint8_t r = (uint8_t)(color.r * 255.0f);
+		//uint8_t g = (uint8_t)(color.g * 255.0f);
+		//uint8_t b = (uint8_t)(color.b * 255.0f);
+		//uint8_t a = (uint8_t)(color.a * 255.0f);
 
-		return winrt::Microsoft::UI::ColorHelper::FromArgb(a, r, g, b);
+		return winrt::Microsoft::UI::ColorHelper::FromArgb((uint8_t)(color.a * 255.0f), (uint8_t)(color.r * 255.0f), (uint8_t)(color.g * 255.0f), (uint8_t)(color.b * 255.0f));
 	}
 
 	//static uint32_t ConvertToRGBA(const glm::vec4& color)
@@ -182,9 +182,10 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 	const glm::vec3 lightDir = glm::normalize(glm::vec3(-1, -1, 1));
 
 	int bounces = 5;
+	Renderer::HitPayload payload;// = TraceRay(ray);
 	for (int i = 0; i < bounces; i++)
 	{
-		Renderer::HitPayload payload = TraceRay(ray);
+		payload = TraceRay(ray);
 		if (payload.HitDistance < 0.0f)
 		{
 			color += skyColor * multiplier;
