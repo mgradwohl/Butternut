@@ -118,25 +118,30 @@ namespace winrt::Butternut::implementation
     {
         ML_METHOD;
 
-        float ts = _frametimer.ElapsedMillis();
-        _scene.OnUpdate(ts);
         if (!_closing)
         {
-            _renderer.Render(_scene);
             canvasBoard().Invalidate();
         }
-        ML_TRACE("Last frame took {}ms", ts - _lastFrameTime);
-        SetStatus(std::format("Last frame time {}ms", ts - _lastFrameTime));
-
-        _lastFrameTime = ts;
     }
 
     void MainWindow::CanvasBoard_Draw([[maybe_unused]] Microsoft::Graphics::Canvas::UI::Xaml::CanvasControl  const& sender, Microsoft::Graphics::Canvas::UI::Xaml::CanvasDrawEventArgs const& args)
     {
         ML_METHOD;
         fps.AddFrame();
-        PumpProperties();
-        args.DrawingSession().DrawImage(_renderer.GetImage());
+
+        float ts = _frametimer.ElapsedMillis();
+        _scene.OnUpdate(ts);
+        if (!_closing)
+        {
+            _renderer.Render(_scene);
+            args.DrawingSession().DrawImage(_renderer.GetImage());
+        }
+
+        ML_TRACE("Last frame took {}ms", ts - _lastFrameTime);
+        SetStatus(std::format("Last frame time {}ms", ts - _lastFrameTime));
+        _lastFrameTime = ts;
+        //PumpProperties();
+
     }
 
     void MainWindow::PumpProperties()
