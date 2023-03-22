@@ -110,6 +110,7 @@ namespace winrt::Butternut::implementation
 
         _frametimer.Reset();
         _scene.Init(ConvertToPixels(canvasBoard().Width()), ConvertToPixels(canvasBoard().Height()));
+        _renderer.OnResize(_canvasDevice, canvasBoard().Width(), canvasBoard().Height(), _dpi);
 
         timer.Start();
     }
@@ -119,7 +120,7 @@ namespace winrt::Butternut::implementation
 
         float ts = _frametimer.ElapsedMillis();
         _scene.OnUpdate(ts);
-        _renderer.OnResize(_canvasDevice, canvasBoard().Width(), canvasBoard().Height(), _dpi);
+        //_renderer.OnResize(_canvasDevice, canvasBoard().Width(), canvasBoard().Height(), _dpi);
         if (!_closing)
         {
             _renderer.Render(_scene);

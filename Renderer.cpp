@@ -10,7 +10,6 @@
 #include <winrt/Microsoft.Graphics.Canvas.UI.Xaml.h>
 #include <winrt/Microsoft.Graphics.DirectX.h>
 #include <winrt/Windows.Storage.Streams.h>
-
 #include <execution>
 #include <vector>
 
@@ -95,27 +94,30 @@ void Renderer::OnResize(winrt::Microsoft::Graphics::Canvas::CanvasDevice& device
 
 void Renderer::UpdateThread(uint32_t start, uint32_t end)
 {
+	// Note this does NOT look as good and some of the accumulated pixels appear to be in the wrong position
+	const int w = m_FinalImage.SizeInPixels().Width;
 	for (uint32_t y = start; y < end; y++)
 	{
-		for (uint32_t x = 0; x < m_FinalImage.SizeInPixels().Width; x++)
+		for (uint32_t x = 0; x < w; x++)
 		{
 			glm::vec4 color = PerPixel(x, y);
-			m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width] += color;
+			m_AccumulationData[x + y * w] += color;
 
-			glm::vec4 accumulatedColor = m_AccumulationData[x + y * m_FinalImage.SizeInPixels().Width];
-			accumulatedColor /= (float)m_FrameIndex;
+			color = m_AccumulationData[x + y * w];
+			color /= (float)m_FrameIndex;
 
-			accumulatedColor = glm::clamp(accumulatedColor, glm::vec4(0.0f), glm::vec4(1.0f));
-			m_ImageData[x + y * m_FinalImage.SizeInPixels().Width] = Utils::ConvertToColor(accumulatedColor);
+			color = glm::clamp(color, glm::vec4(0.0f), glm::vec4(1.0f));
+			m_ImageData[x + y * w] = Utils::ConvertToColor(color);
 		}
 	}
 }
+
 void Renderer::Render(Scene& scene)
 {
 	ML_METHOD;
 	m_ActiveScene = &scene;
 	m_ActiveCamera = &(scene.GetCamera());
-	constexpr glm::vec4 skyColor = glm::vec4(1.0f,0.6f, 0.7f, 0.9f);
+	const glm::vec4 skyColor = glm::vec4(1.0f,0.6f, 0.7f, 0.9f);
 
 	if (m_FrameIndex == 1)
 	{
@@ -123,6 +125,9 @@ void Renderer::Render(Scene& scene)
 		ML_TRACE("Resetting FrameIndex\n");
 	}
 
+	// super slow code ahead
+	// Matt's "I like control of how many threads get created" version
+	// Note this does NOT look as good and some of the accumulated pixels appear to be in the wrong position
 	//int _threadcount = 200;// gsl::narrow_cast<int>(std::thread::hardware_concurrency() - 1);
 	//int rowStart = 0;
 	//const auto rowsPerThread = gsl::narrow_cast<uint16_t>(m_FinalImage.SizeInPixels().Height / _threadcount);
@@ -136,25 +141,22 @@ void Renderer::Render(Scene& scene)
 	//}
 	//threads.emplace_back(std::jthread{ &Renderer::UpdateThread, this, rowStart, gsl::narrow_cast<uint16_t>(rowStart + rowsPerThread + remainingRows)});
 
-	 //Original Cherno Code this is the super slow part
+	//Original Cherno Code with some modifications
+	const int w = m_FinalImage.SizeInPixels().Width;
 	std::for_each(std::execution::par, m_ImageVerticalIter.begin(), m_ImageVerticalIter.end(),
-		[this](uint32_t y)
+		[this,w](uint32_t y)
 		{
 			std::for_each(std::execution::seq, m_ImageHorizontalIter.begin(), m_ImageHorizontalIter.end(),
-				[this, y](uint32_t x)
+				[this, y,w](uint32_t x)
 				{
 					glm::vec4 color = PerPixel(x, y);
-					m_AccumulationData[x + (m_FinalImage.SizeInPixels().Height - y -1) * m_FinalImage.SizeInPixels().Width] += color;
+					m_AccumulationData[x + y * w] += color;
 
-					//glm::vec4 accumulatedColor = m_AccumulationData[x + (m_FinalImage.SizeInPixels().Height - y - 1) * m_FinalImage.SizeInPixels().Width];
-					//accumulatedColor /= (float)m_FrameIndex;
-					//accumulatedColor = glm::clamp(accumulatedColor, glm::vec4(0.0f), glm::vec4(1.0f));
-					//m_ImageData[x + (m_FinalImage.SizeInPixels().Height - y - 1) * m_FinalImage.SizeInPixels().Width] = Utils::ConvertToColor(accumulatedColor);
-					color = m_AccumulationData[x + (m_FinalImage.SizeInPixels().Height - y -1) * m_FinalImage.SizeInPixels().Width];
+					color = m_AccumulationData[x + y * w];
 					color /= (float)m_FrameIndex;
 
 					color = glm::clamp(color, glm::vec4(0.0f), glm::vec4(1.0f));
-					m_ImageData[x + (m_FinalImage.SizeInPixels().Height - y - 1) * m_FinalImage.SizeInPixels().Width] = Utils::ConvertToColor(color);
+					m_ImageData[x + y * w] = Utils::ConvertToColor(color);
 				});
 		});
 
@@ -175,9 +177,9 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 	ray.Direction = m_ActiveCamera->GetRayDirections()[x + y * m_FinalImage.SizeInPixels().Width];
 	
 	glm::vec3 color(0.0f);
-	constexpr glm::vec3 skyColor = glm::vec3(0.6f, 0.7f, 0.9f);
+	const glm::vec3 skyColor = glm::vec3(0.6f, 0.7f, 0.9f);
 	float multiplier = 1.0f;
-	const glm::vec3 lightDir = glm::normalize(glm::vec3(-1, -1, -1));
+	const glm::vec3 lightDir = glm::normalize(glm::vec3(-1, -1, 1));
 
 	int bounces = 5;
 	for (int i = 0; i < bounces; i++)
