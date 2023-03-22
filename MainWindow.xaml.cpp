@@ -120,7 +120,6 @@ namespace winrt::Butternut::implementation
 
         float ts = _frametimer.ElapsedMillis();
         _scene.OnUpdate(ts);
-        //_renderer.OnResize(_canvasDevice, canvasBoard().Width(), canvasBoard().Height(), _dpi);
         if (!_closing)
         {
             _renderer.Render(_scene);
