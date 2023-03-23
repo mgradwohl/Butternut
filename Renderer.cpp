@@ -69,8 +69,9 @@ void Renderer::OnResize(winrt::Microsoft::Graphics::Canvas::CanvasDevice& device
 	}
 	else
 	{
-		float w = width;
-		float h = height;
+		m_FinalImage = winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget(device, 100, 100, dpi); 
+		float w = m_FinalImage.ConvertPixelsToDips(width); //pixels = dips * dpi / 96
+		float h = m_FinalImage.ConvertPixelsToDips(height);
 
 		m_FinalImage = winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget(device, w, h, dpi);// , winrt::Microsoft::Graphics::DirectX::DirectXPixelFormat::R8G8B8A8UInt, winrt::Microsoft::Graphics::Canvas::CanvasAlphaMode::Straight );
 		// TODO this does not make the image right side up
@@ -81,7 +82,7 @@ void Renderer::OnResize(winrt::Microsoft::Graphics::Canvas::CanvasDevice& device
 	uint32_t w = m_FinalImage.SizeInPixels().Width;
 	uint32_t h = m_FinalImage.SizeInPixels().Height;
 	m_ImageData.resize(w * h);
-	m_AccumulationData.resize(w* h);
+	m_AccumulationData.resize(w * h);
 
 	m_ImageHorizontalIter.resize(w);
 	for (uint32_t i = 0; i < w; i++)
@@ -90,6 +91,8 @@ void Renderer::OnResize(winrt::Microsoft::Graphics::Canvas::CanvasDevice& device
 	m_ImageVerticalIter.resize(h);
 	for (uint32_t i = 0; i < h; i++)
 		m_ImageVerticalIter[i] = i;
+
+	m_FrameIndex = 1;
 }
 
 void Renderer::UpdateThread(uint32_t start, uint32_t end)
@@ -142,7 +145,7 @@ void Renderer::Render(Scene& scene)
 	//threads.emplace_back(std::jthread{ &Renderer::UpdateThread, this, rowStart, gsl::narrow_cast<uint16_t>(rowStart + rowsPerThread + remainingRows)});
 
 	//Original Cherno Code with some modifications
-	const int w = m_FinalImage.SizeInPixels().Width;
+	int w = m_FinalImage.SizeInPixels().Width;
 	std::for_each(std::execution::par, m_ImageVerticalIter.begin(), m_ImageVerticalIter.end(),
 		[this,w](uint32_t y)
 		{
@@ -174,7 +177,8 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 {
 	Ray ray;
 	ray.Origin = m_ActiveCamera->GetPosition();
-	ray.Direction = m_ActiveCamera->GetRayDirections()[x + y * m_FinalImage.SizeInPixels().Width];
+	const int width = m_FinalImage.SizeInPixels().Width;
+	ray.Direction = m_ActiveCamera->GetRayDirections()[x + y * width];
 	
 	glm::vec3 color(0.0f);
 	const glm::vec3 skyColor = glm::vec3(0.6f, 0.7f, 0.9f);

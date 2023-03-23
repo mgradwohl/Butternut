@@ -101,7 +101,7 @@ namespace winrt::Butternut::implementation
         _queue = winrt::Microsoft::UI::Dispatching::DispatcherQueue::GetForCurrentThread();
         timer = _queue.CreateTimer();
         timer.IsRepeating(true);
-        timer.Interval(std::chrono::milliseconds(1000 / 30));
+        timer.Interval(std::chrono::milliseconds(1000 / 60));
         timer.Tick({ get_strong(), &MainWindow::OnTick });
 
 
@@ -109,8 +109,10 @@ namespace winrt::Butternut::implementation
         fps.Start();
 
         _frametimer.Reset();
-        _scene.Init(ConvertToPixels(canvasBoard().Width()), ConvertToPixels(canvasBoard().Height()));
-        _renderer.OnResize(_canvasDevice, canvasBoard().Width(), canvasBoard().Height(), _dpi);
+        const int width = canvasBoard().Size().Width;
+        const int height = canvasBoard().Size().Height;
+        // TODO
+        _scene.Init(1200, 750);
 
         timer.Start();
     }
@@ -131,8 +133,12 @@ namespace winrt::Butternut::implementation
 
         float ts = _frametimer.ElapsedMillis();
         _scene.OnUpdate(ts);
+        const int width = canvasBoard().Size().Width;
+        const int height = canvasBoard().Size().Height;
+
         if (!_closing)
         {
+            _renderer.OnResize(_canvasDevice, width, height, _dpi);
             _renderer.Render(_scene);
             args.DrawingSession().DrawImage(_renderer.GetImage());
         }
