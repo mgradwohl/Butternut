@@ -8,7 +8,7 @@ class Camera
 public:
 	Camera(float verticalFOV, float nearClip, float farClip);
 
-	bool OnUpdate(float ts);
+	bool OnUpdate(float ts, winrt::Windows::System::VirtualKey key);
 	void OnResize(uint32_t width, uint32_t height);
 
 	const glm::mat4& GetProjection() const { return m_Projection; }
@@ -37,7 +37,7 @@ private:
 	float m_FarClip = 100.0f;
 
 	glm::vec3 m_Position{0.0f, 0.0f, 0.0f};
-	glm::vec3 m_ForwardDirection{0.0f, 0.0f, 0.0f};
+	glm::vec3 m_ForwardDirection{0.0f, 0.0f, 1.0f};
 
 	// Cached ray directions
 	std::vector<glm::vec3> m_RayDirections;

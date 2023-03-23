@@ -1,7 +1,7 @@
 #include "pch.h"
 
 #include "Camera.h"
-
+#include "Log.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -15,7 +15,7 @@ Camera::Camera(float verticalFOV, float nearClip, float farClip)
 	m_Position = glm::vec3(0, 0, -6);
 }
 
-bool Camera::OnUpdate(float ts)
+bool Camera::OnUpdate(float ts, winrt::Windows::System::VirtualKey key)
 {
 	//glm::vec2 mousePos = Input::GetMousePosition();
 	//glm::vec2 delta = (mousePos - m_LastMousePosition) * 0.002f;
@@ -34,41 +34,49 @@ bool Camera::OnUpdate(float ts)
 	const glm::vec3 upDirection(0.0f, 1.0f, 0.0f);
 	glm::vec3 rightDirection = glm::cross(m_ForwardDirection, upDirection);
 
-	float speed = 5.0f;
+	float speed = 1.0f;
 
-	// Movement
-	//if (Input::IsKeyDown(KeyCode::W))
-	//{
-	//	m_Position += m_ForwardDirection * speed * ts;
-	//	moved = true;
-	//}
-	//else if (Input::IsKeyDown(KeyCode::S))
-	//{
-	//	m_Position -= m_ForwardDirection * speed * ts;
-	//	moved = true;
-	//}
-	//if (Input::IsKeyDown(KeyCode::A))
-	//{
-	//	m_Position -= rightDirection * speed * ts;
-	//	moved = true;
-	//}
-	//else if (Input::IsKeyDown(KeyCode::D))
-	//{
-	//	m_Position += rightDirection * speed * ts;
-	//	moved = true;
-	//}
-	//if (Input::IsKeyDown(KeyCode::Q))
-	//{
-	//	m_Position -= upDirection * speed * ts;
-	//	moved = true;
-	//}
-	//else if (Input::IsKeyDown(KeyCode::E))
-	//{
-	//	m_Position += upDirection * speed * ts;
-	//	moved = true;
-	//}
+ //Movement
+	if (key == winrt::Windows::System::VirtualKey::W)
+	{
+		m_Position += m_ForwardDirection * speed * ts;
+		ML_TRACE("Moving forwards.\n");
+		moved = true;
+	}
+	else if (key == winrt::Windows::System::VirtualKey::S)
+	{
+		m_Position -= m_ForwardDirection * speed * ts;
+		ML_TRACE("Moving backwards.\n");
+		moved = true;
+	}
 
-	// Rotation
+	if (key == winrt::Windows::System::VirtualKey::A)
+	{
+		m_Position -= rightDirection * speed * ts;
+		ML_TRACE("Moving left.\n");
+		moved = true;
+	}
+	else if (key == winrt::Windows::System::VirtualKey::D)
+	{
+		m_Position += rightDirection * speed * ts;
+		ML_TRACE("Moving right.\n");
+		moved = true;
+	}
+
+	if (key == winrt::Windows::System::VirtualKey::Q)
+	{
+		m_Position -= upDirection * speed * ts;
+		ML_TRACE("Moving up.\n");
+		moved = true;
+	}
+	else if (key == winrt::Windows::System::VirtualKey::E)
+	{
+		m_Position += upDirection * speed * ts;
+		ML_TRACE("Moving down.\n");
+		moved = true;
+	}
+
+	//Rotation
 	//if (delta.x != 0.0f || delta.y != 0.0f)
 	//{
 	//	float pitchDelta = delta.y * GetRotationSpeed();
@@ -81,11 +89,11 @@ bool Camera::OnUpdate(float ts)
 	//	moved = true;
 	//}
 
-	//if (moved)
-	//{
-	//	RecalculateView();
-	//	RecalculateRayDirections();
-	//}
+	if (moved)
+	{
+		RecalculateView();
+		RecalculateRayDirections();
+	}
 
 	return moved;
 }

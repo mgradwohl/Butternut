@@ -34,9 +34,9 @@ public:
 		_camera.OnResize(viewportWidth, viewportHeight);
 	}
 
-	void OnUpdate(float ts)
+	void OnUpdate(float ts, winrt::Windows::System::VirtualKey key)
 	{
-		_camera.OnUpdate(ts);
+		_camera.OnUpdate(ts, key);
 //			_Renderer.ResetFrameIndex();
 	}
 

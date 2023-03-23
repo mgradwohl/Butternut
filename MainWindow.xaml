@@ -11,9 +11,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     
-    Activated="OnWindowActivate" Closed="OnWindowClosed" SizeChanged="OnWindowResized"  >
+    Activated="OnWindowActivate" Closed="OnWindowClosed" SizeChanged="OnWindowResized" >
 
-    <Grid>
+    <Grid IsTabStop="True" IsHitTestVisible="True" KeyDown="OnKeyDown">
         <Grid.RowDefinitions>
             <RowDefinition Height="32"/>
             <RowDefinition Height="*"/>
@@ -35,7 +35,8 @@
                                       PointerMoved="OnPointerMoved" PointerReleased="OnPointerReleased"
                                       PointerPressed="OnPointerPressed" PointerExited="OnPointerExited"
                                       Draw="CanvasBoard_Draw" CreateResources="CanvasBoard_CreateResources"
-                                      ClearColor="{StaticResource SystemChromeMediumColor}" SizeChanged="CanvasBoard_SizeChanged" />
+                                      ClearColor="{StaticResource SystemChromeMediumColor}" SizeChanged="CanvasBoard_SizeChanged"
+                                      Visibility="Visible" IsTabStop="True" IsHitTestVisible="True" IsEnabled="True" KeyDown="OnKeyDown" />
             </Grid>
 
             <SplitView.Pane>

@@ -129,15 +129,14 @@ namespace winrt::Butternut::implementation
     void MainWindow::CanvasBoard_Draw([[maybe_unused]] Microsoft::Graphics::Canvas::UI::Xaml::CanvasControl  const& sender, Microsoft::Graphics::Canvas::UI::Xaml::CanvasDrawEventArgs const& args)
     {
         ML_METHOD;
-        fps.AddFrame();
 
-        float ts = _frametimer.ElapsedMillis();
-        _scene.OnUpdate(ts);
         const int width = canvasBoard().Size().Width;
         const int height = canvasBoard().Size().Height;
 
+        float ts = _frametimer.ElapsedMillis();
         if (!_closing)
         {
+            _scene.OnUpdate(ts, _key);
             _renderer.OnResize(_canvasDevice, width, height, _dpi);
             _renderer.Render(_scene);
             args.DrawingSession().DrawImage(_renderer.GetImage());
@@ -147,7 +146,7 @@ namespace winrt::Butternut::implementation
         SetStatus(std::format("Last frame time {}ms", ts - _lastFrameTime));
         _lastFrameTime = ts;
         PumpProperties();
-
+        fps.AddFrame();
     }
 
     void MainWindow::PumpProperties()
@@ -175,6 +174,17 @@ namespace winrt::Butternut::implementation
 
         auto result = co_await dialog.ShowAsync();
         result;
+    }
+
+    void MainWindow::OnKeyDown(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::KeyRoutedEventArgs const& e)
+    {
+        //if (sender != canvasBoard())
+        //{
+        //    return;
+        //}
+        _key = e.Key();
+
+        e.Handled(true);
     }
 
     void MainWindow::OnPointerPressed(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e)
@@ -272,12 +282,12 @@ namespace winrt::Butternut::implementation
     // property & event handlers
     void MainWindow::GoButton_Click([[maybe_unused]] IInspectable const& sender, [[maybe_unused]] winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e)
     {
-        //Render();
+        _renderer.Render(_scene);
     }
 
     void MainWindow::ResetButton_Click([[maybe_unused]] IInspectable const& sender, [[maybe_unused]] winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e)
     {
-        //Reset();
+        _renderer.ResetFrameIndex();
     }
 
     void MainWindow::OnCanvasDeviceChanged()
