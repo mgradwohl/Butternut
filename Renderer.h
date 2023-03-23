@@ -46,6 +46,8 @@ private:
 	HitPayload TraceRay(const Ray& ray);
 	HitPayload ClosestHit(const Ray& ray, float hitDistance, int objectIndex);
 	HitPayload Miss(const Ray& ray);
+	[[nodiscard]] size_t Width() const { return _width; };
+	[[nodiscard]] size_t Height() const { return _height; };
 
 private:
 	winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget m_FinalImage{nullptr};
@@ -55,6 +57,11 @@ private:
 
 	const Scene* m_ActiveScene = nullptr;
 	const Camera* m_ActiveCamera = nullptr;
+
+	// TODO cache these so that methods don't need to call into m_FinalImage.SizeInPixels().Width/Height
+	// make sure they are updated when the OnResize is called
+	size_t _width = 0;
+	size_t _height = 0;
 
 	Settings m_Settings;
 	uint32_t m_FrameIndex = 1;

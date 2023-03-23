@@ -61,35 +61,39 @@ winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget& Renderer::GetImage()
 void Renderer::OnResize(winrt::Microsoft::Graphics::Canvas::CanvasDevice& device, uint32_t width, uint32_t height, float dpi)
 {
 	ML_METHOD;
+	if (width == _width && height == _height && m_FinalImage)
+	{
+		// nothing to do here
+		return;
+	}
+
+	_width = width;
+	_height = height;
+
 	if (m_FinalImage)
 	{
-		// No resize necessary
-		if (m_FinalImage.SizeInPixels().Width == width && m_FinalImage.SizeInPixels().Height == height)
+		if (m_FinalImage.SizeInPixels().Width == _width && m_FinalImage.SizeInPixels().Height == _height)
+		{
+			// No resize necessary
 			return;
-	}
-	else
-	{
-		m_FinalImage = winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget(device, 100, 100, dpi); 
-		float w = m_FinalImage.ConvertPixelsToDips(width); //pixels = dips * dpi / 96
-		float h = m_FinalImage.ConvertPixelsToDips(height);
-
-		m_FinalImage = winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget(device, w, h, dpi);// , winrt::Microsoft::Graphics::DirectX::DirectXPixelFormat::R8G8B8A8UInt, winrt::Microsoft::Graphics::Canvas::CanvasAlphaMode::Straight );
-		// TODO this does not make the image right side up
-		// best to just draw it right side up
-		//m_FinalImage.CreateDrawingSession().Transform(winrt::Windows::Foundation::Numerics::make_float3x2_scale(1.0f, -1.0f));
+		}
 	}
 
-	uint32_t w = m_FinalImage.SizeInPixels().Width;
-	uint32_t h = m_FinalImage.SizeInPixels().Height;
-	m_ImageData.resize(w * h);
-	m_AccumulationData.resize(w * h);
+	m_FinalImage = winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget(device, 100, 100, dpi); 
+	float w = m_FinalImage.ConvertPixelsToDips(_width);
+	float h = m_FinalImage.ConvertPixelsToDips(_height);
 
-	m_ImageHorizontalIter.resize(w);
-	for (uint32_t i = 0; i < w; i++)
+	m_FinalImage = winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget(device, w, h, dpi);
+
+	m_ImageData.resize(_width * _height);
+	m_AccumulationData.resize(_width * _height);
+
+	m_ImageHorizontalIter.resize(_width);
+	for (uint32_t i = 0; i < _width; i++)
 		m_ImageHorizontalIter[i] = i;
 
-	m_ImageVerticalIter.resize(h);
-	for (uint32_t i = 0; i < h; i++)
+	m_ImageVerticalIter.resize(_height);
+	for (uint32_t i = 0; i < _height; i++)
 		m_ImageVerticalIter[i] = i;
 
 	m_FrameIndex = 1;
@@ -98,19 +102,18 @@ void Renderer::OnResize(winrt::Microsoft::Graphics::Canvas::CanvasDevice& device
 void Renderer::UpdateThread(uint32_t start, uint32_t end)
 {
 	// Note this does NOT look as good and some of the accumulated pixels appear to be in the wrong position
-	const int w = m_FinalImage.SizeInPixels().Width;
 	for (uint32_t y = start; y < end; y++)
 	{
-		for (uint32_t x = 0; x < w; x++)
+		for (uint32_t x = 0; x < _width; x++)
 		{
 			glm::vec4 color = PerPixel(x, y);
-			m_AccumulationData[x + y * w] += color;
+			m_AccumulationData[x + y * _width] += color;
 
-			color = m_AccumulationData[x + y * w];
+			color = m_AccumulationData[x + y * _width];
 			color /= (float)m_FrameIndex;
 
 			color = glm::clamp(color, glm::vec4(0.0f), glm::vec4(1.0f));
-			m_ImageData[x + y * w] = Utils::ConvertToColor(color);
+			m_ImageData[x + y * _width] = Utils::ConvertToColor(color);
 		}
 	}
 }
@@ -124,42 +127,41 @@ void Renderer::Render(Scene& scene)
 
 	if (m_FrameIndex == 1)
 	{
-		memset(m_AccumulationData.data(), 0, m_FinalImage.SizeInPixels().Width * m_FinalImage.SizeInPixels().Height * sizeof(glm::vec4));
+		memset(m_AccumulationData.data(), 0, _width * _height * sizeof(glm::vec4));
 		ML_TRACE("Resetting FrameIndex\n");
 	}
 
 	// super slow code ahead
 	// Matt's "I like control of how many threads get created" version
 	// Note this does NOT look as good and some of the accumulated pixels appear to be in the wrong position
-	//int _threadcount = 200;// gsl::narrow_cast<int>(std::thread::hardware_concurrency() - 1);
-	//int rowStart = 0;
-	//const auto rowsPerThread = gsl::narrow_cast<uint16_t>(m_FinalImage.SizeInPixels().Height / _threadcount);
-	//const auto remainingRows = gsl::narrow_cast<uint16_t>(m_FinalImage.SizeInPixels().Height % _threadcount);
+	//int _threadcount = 8000;// gsl::narrow_cast<int>(std::thread::hardware_concurrency() - 1);
+	//uint32_t rowStart = 0;
+	//const uint32_t rowsPerThread = gsl::narrow_cast<int>(_height / _threadcount);
+	//const uint32_t remainingRows = gsl::narrow_cast<int>(_height % _threadcount);
 
 	//std::vector<std::jthread> threads;
 	//for (int t = 0; t < _threadcount - 1; t++)
 	//{
-	//	threads.emplace_back(std::jthread{ &Renderer::UpdateThread, this, rowStart, gsl::narrow_cast<uint16_t>(rowStart + rowsPerThread)});
+	//	threads.emplace_back(std::jthread{ &Renderer::UpdateThread, this, rowStart, rowStart + rowsPerThread});
 	//	rowStart += rowsPerThread;
 	//}
-	//threads.emplace_back(std::jthread{ &Renderer::UpdateThread, this, rowStart, gsl::narrow_cast<uint16_t>(rowStart + rowsPerThread + remainingRows)});
-
+	//threads.emplace_back(std::jthread{ &Renderer::UpdateThread, this, rowStart, rowStart + rowsPerThread + remainingRows});
+	
 	//Original Cherno Code with some modifications
-	int w = m_FinalImage.SizeInPixels().Width;
 	std::for_each(std::execution::par, m_ImageVerticalIter.begin(), m_ImageVerticalIter.end(),
-		[this,w](uint32_t y)
+		[this](uint32_t y)
 		{
 			std::for_each(std::execution::seq, m_ImageHorizontalIter.begin(), m_ImageHorizontalIter.end(),
-				[this, y,w](uint32_t x)
+				[this, y](uint32_t x)
 				{
 					glm::vec4 color = PerPixel(x, y);
-					m_AccumulationData[x + y * w] += color;
+					m_AccumulationData[x + y * _width] += color;
 
-					color = m_AccumulationData[x + y * w];
+					color = m_AccumulationData[x + y * _width];
 					color /= (float)m_FrameIndex;
 
 					color = glm::clamp(color, glm::vec4(0.0f), glm::vec4(1.0f));
-					m_ImageData[x + y * w] = Utils::ConvertToColor(color);
+					m_ImageData[x + y * _width] = Utils::ConvertToColor(color);
 				});
 		});
 
@@ -169,16 +171,15 @@ void Renderer::Render(Scene& scene)
 		m_FrameIndex++;
 	else
 		m_FrameIndex = 1;
-	ML_TRACE("FrameIndex {}\n", m_FrameIndex);
 
+	ML_TRACE("FrameIndex {}\n", m_FrameIndex);
 }
 
 glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 {
 	Ray ray;
 	ray.Origin = m_ActiveCamera->GetPosition();
-	const int width = m_FinalImage.SizeInPixels().Width;
-	ray.Direction = m_ActiveCamera->GetRayDirections()[x + y * width];
+	ray.Direction = m_ActiveCamera->GetRayDirections()[x + y * _width];
 	
 	glm::vec3 color(0.0f);
 	const glm::vec3 skyColor = glm::vec3(0.6f, 0.7f, 0.9f);

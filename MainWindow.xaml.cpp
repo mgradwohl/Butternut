@@ -250,9 +250,11 @@ namespace winrt::Butternut::implementation
         constexpr int statusheight = 28;
 
         // ResizeClient wants pixels, not DIPs
-
-        const int wndWidth = gsl::narrow_cast<int>((canvasBoard().Width() + stackpanelwidth + border) * _dpi / 96.0f);
-        const int wndHeight = gsl::narrow_cast<int>((canvasBoard().Height() + border + statusheight) * _dpi / 96.0f);
+        // TODO hack
+        const int width = 1200; //canvasBoard().Size().Width;
+        const int height = 750; //canvasBoard().Size().Height;
+        const int wndWidth = width + ((stackpanelwidth + border) * _dpi / 96.0f);
+        const int wndHeight = height + ((border + statusheight) * _dpi / 96.0f);
 
         // resize the window
         if (auto appWnd = Microsoft::UI::Windowing::AppWindow::GetFromWindowId(idWnd); appWnd)
