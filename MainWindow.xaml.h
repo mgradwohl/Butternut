@@ -70,6 +70,7 @@ namespace winrt::Butternut::implementation
         // event handlers
         void OnTick(winrt::Microsoft::UI::Dispatching::DispatcherQueueTimer const&, IInspectable const&);
 
+        void OnKeyUp(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::KeyRoutedEventArgs const& e);
         void OnKeyDown(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::KeyRoutedEventArgs const& e);
         void OnPointerPressed(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e);
         void OnPointerMoved(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e);
@@ -101,8 +102,8 @@ namespace winrt::Butternut::implementation
         float _lastFrameTime{ 0 };
 
         PointerMode _PointerMode = PointerMode::None;
-        winrt::Windows::System::VirtualKey _key;
-
+        winrt::Windows::System::VirtualKey _key = winrt::Windows::System::VirtualKey::None;
+        winrt::Microsoft::UI::Input::PointerPoint _point;
         bool _closing = false;
 
         winrt::Microsoft::UI::Dispatching::DispatcherQueueController _controller{ nullptr };
