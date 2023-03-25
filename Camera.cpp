@@ -7,7 +7,6 @@
 #include <glm/gtx/quaternion.hpp>
 
 #include <winrt/Microsoft.UI.Input.h>
-//using namespace winrt::Butternut::implementation;
 
 Camera::Camera(float verticalFOV, float nearClip, float farClip)
 	: m_VerticalFOV(verticalFOV), m_NearClip(nearClip), m_FarClip(farClip)
@@ -16,13 +15,9 @@ Camera::Camera(float verticalFOV, float nearClip, float farClip)
 	m_Position = glm::vec3(0, 0, -6);
 }
 
-bool Camera::OnUpdate(float ts, winrt::Windows::System::VirtualKey key, winrt::Microsoft::UI::Input::PointerPoint point)
+bool Camera::OnUpdate(float ts, winrt::Windows::System::VirtualKey key, glm::vec2 mousePos)
 {
 	bool moved = false;
-
-	glm::vec2 mousePos;
-	mousePos.x = point.Position().X;
-	mousePos.y = point.Position().Y;
 
 	glm::vec2 delta = (mousePos - m_LastMousePosition) * 0.002f;
 	m_LastMousePosition = mousePos;

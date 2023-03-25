@@ -103,7 +103,9 @@ namespace winrt::Butternut::implementation
 
         PointerMode _PointerMode = PointerMode::None;
         winrt::Windows::System::VirtualKey _key = winrt::Windows::System::VirtualKey::None;
-        winrt::Microsoft::UI::Input::PointerPoint _point;
+
+        glm::vec2 _point;
+        //winrt::Microsoft::UI::Input::PointerPoint _point{nullptr};
         bool _closing = false;
 
         winrt::Microsoft::UI::Dispatching::DispatcherQueueController _controller{ nullptr };

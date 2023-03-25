@@ -8,7 +8,7 @@ class Camera
 public:
 	Camera(float verticalFOV, float nearClip, float farClip);
 
-	bool OnUpdate(float ts, winrt::Windows::System::VirtualKey key, winrt::Microsoft::UI::Input::PointerPoint point);
+	bool OnUpdate(float ts, winrt::Windows::System::VirtualKey key, glm::vec2 point);
 	void OnResize(uint32_t width, uint32_t height);
 
 	const glm::mat4& GetProjection() const { return m_Projection; }

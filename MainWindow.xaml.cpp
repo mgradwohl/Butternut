@@ -131,12 +131,6 @@ namespace winrt::Butternut::implementation
     void MainWindow::CanvasBoard_Draw([[maybe_unused]] Microsoft::Graphics::Canvas::UI::Xaml::CanvasControl  const& sender, Microsoft::Graphics::Canvas::UI::Xaml::CanvasDrawEventArgs const& args)
     {
         ML_METHOD;
-///////////////////
-        //float time = GetTime();
-        //m_FrameTime = time - m_LastFrameTime;
-        //m_TimeStep = glm::min<float>(m_FrameTime, 0.0333f);
-        //m_LastFrameTime = time;
-
 
         const int width = canvasBoard().Size().Width;
         const int height = canvasBoard().Size().Height;
@@ -149,6 +143,7 @@ namespace winrt::Butternut::implementation
         if (!_closing)
         {
             _scene.OnUpdate(ts, _key, _point);
+            _renderer.ResetFrameIndex();
             _renderer.OnResize(_canvasDevice, width, height, _dpi);
             _renderer.Render(_scene);
             args.DrawingSession().DrawImage(_renderer.GetImage());
@@ -239,7 +234,8 @@ namespace winrt::Butternut::implementation
         {
             return;
         }
-        _point = e.GetCurrentPoint(canvasBoard());
+        _point.x = e.GetCurrentPoint(canvasBoard()).Position().X;
+        _point.y = e.GetCurrentPoint(canvasBoard()).Position().Y;
 
         //for (const Microsoft::UI::Input::PointerPoint& point : e.GetIntermediatePoints(canvasBoard().as<Microsoft::UI::Xaml::UIElement>()))
         //{
