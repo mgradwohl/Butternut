@@ -115,7 +115,9 @@ namespace winrt::Butternut::implementation
         _scene.Init(1200, 750);
 
         timer.Start();
+        _lastFrameTime = _frametimer.ElapsedMillis();
     }
+
     void MainWindow::OnTick(winrt::Microsoft::UI::Dispatching::DispatcherQueueTimer const&, IInspectable const&)
     {
         ML_METHOD;
@@ -129,22 +131,32 @@ namespace winrt::Butternut::implementation
     void MainWindow::CanvasBoard_Draw([[maybe_unused]] Microsoft::Graphics::Canvas::UI::Xaml::CanvasControl  const& sender, Microsoft::Graphics::Canvas::UI::Xaml::CanvasDrawEventArgs const& args)
     {
         ML_METHOD;
+///////////////////
+        //float time = GetTime();
+        //m_FrameTime = time - m_LastFrameTime;
+        //m_TimeStep = glm::min<float>(m_FrameTime, 0.0333f);
+        //m_LastFrameTime = time;
+
 
         const int width = canvasBoard().Size().Width;
         const int height = canvasBoard().Size().Height;
 
-        float ts = _frametimer.ElapsedMillis();
+        float time = _frametimer.ElapsedMillis();
+        float ts = time - _lastFrameTime;
+        ts = glm::min<float>(ts, 0.0333f);
+        _lastFrameTime = time;
+
         if (!_closing)
         {
             _scene.OnUpdate(ts, _key);
+            //_renderer.ResetFrameIndex();
             _renderer.OnResize(_canvasDevice, width, height, _dpi);
             _renderer.Render(_scene);
             args.DrawingSession().DrawImage(_renderer.GetImage());
         }
 
-        ML_TRACE("Last frame took {}ms", ts - _lastFrameTime);
-        SetStatus(std::format("Last frame time {}ms", ts - _lastFrameTime));
-        _lastFrameTime = ts;
+        ML_TRACE("Last frame took {}ms", ts);
+        SetStatus(std::format("Last frame time {}ms", ts));
         PumpProperties();
         fps.AddFrame();
     }
