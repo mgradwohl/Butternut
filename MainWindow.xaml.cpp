@@ -149,7 +149,7 @@ namespace winrt::Butternut::implementation
         if (!_closing)
         {
             _scene.OnUpdate(ts, _key);
-            //_renderer.ResetFrameIndex();
+            _renderer.ResetFrameIndex();
             _renderer.OnResize(_canvasDevice, width, height, _dpi);
             _renderer.Render(_scene);
             args.DrawingSession().DrawImage(_renderer.GetImage());
