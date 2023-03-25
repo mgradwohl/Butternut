@@ -148,8 +148,7 @@ namespace winrt::Butternut::implementation
 
         if (!_closing)
         {
-            _scene.OnUpdate(ts, _key);
-            _renderer.ResetFrameIndex();
+            _scene.OnUpdate(ts, _key, _point);
             _renderer.OnResize(_canvasDevice, width, height, _dpi);
             _renderer.Render(_scene);
             args.DrawingSession().DrawImage(_renderer.GetImage());
@@ -188,13 +187,24 @@ namespace winrt::Butternut::implementation
         result;
     }
 
-    void MainWindow::OnKeyDown(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::KeyRoutedEventArgs const& e)
+    void MainWindow::OnKeyUp(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::KeyRoutedEventArgs const& e)
     {
         //if (sender != canvasBoard())
         //{
         //    return;
         //}
         _key = e.Key();
+
+        e.Handled(true);
+    }
+
+    void MainWindow::OnKeyDown(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::KeyRoutedEventArgs const& e)
+    {
+        //if (sender != canvasBoard())
+        //{
+        //    return;
+        //}
+        _key = winrt::Windows::System::VirtualKey::None;
 
         e.Handled(true);
     }
@@ -218,24 +228,27 @@ namespace winrt::Butternut::implementation
         {
 			_PointerMode = PointerMode::None;
 		}
+        e.Handled(true);
     }
 
     void MainWindow::OnPointerMoved([[maybe_unused]] winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e)
     {
-        if (_PointerMode == PointerMode::None || _PointerMode == PointerMode::Middle)
+        const bool on = (_PointerMode == PointerMode::Right);
+
+        if (!on)
         {
-			return;
-		}
-
-        bool on = (_PointerMode == PointerMode::Left);
-
-        for (const Microsoft::UI::Input::PointerPoint& point : e.GetIntermediatePoints(canvasBoard().as<Microsoft::UI::Xaml::UIElement>()))
-        {
-
-            //ML_TRACE("Point {},{} Cell grid {},{}", point.Position().X, point.Position().Y, g.x, g.y);
-            //SetStatus("Drawing. Left mouse button to draw. Right right mouse button to erase.");
-
+            return;
         }
+        _point = e.GetCurrentPoint(canvasBoard());
+
+        //for (const Microsoft::UI::Input::PointerPoint& point : e.GetIntermediatePoints(canvasBoard().as<Microsoft::UI::Xaml::UIElement>()))
+        //{
+
+        //    //ML_TRACE("Point {},{} Cell grid {},{}", point.Position().X, point.Position().Y, g.x, g.y);
+        //    //SetStatus("Drawing. Left mouse button to draw. Right right mouse button to erase.");
+
+        //}
+        e.Handled(true);
         InvalidateIfNeeded();
     }
 
@@ -243,12 +256,14 @@ namespace winrt::Butternut::implementation
     {
         //SetStatus("Drawing mode completed.");
         _PointerMode = PointerMode::None;
+        e.Handled(true);
     }
     
     void MainWindow::OnPointerExited([[maybe_unused]] winrt::Windows::Foundation::IInspectable const& sender, [[maybe_unused]] winrt::Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e) noexcept
     {
         //SetStatus("Drawing mode completed.");
         _PointerMode = PointerMode::None;
+        e.Handled(true);
     }
 
     void MainWindow::SetBestCanvasandWindowSizes()

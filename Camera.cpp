@@ -6,6 +6,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include <winrt/Microsoft.UI.Input.h>
 //using namespace winrt::Butternut::implementation;
 
 Camera::Camera(float verticalFOV, float nearClip, float farClip)
@@ -15,21 +16,16 @@ Camera::Camera(float verticalFOV, float nearClip, float farClip)
 	m_Position = glm::vec3(0, 0, -6);
 }
 
-bool Camera::OnUpdate(float ts, winrt::Windows::System::VirtualKey key)
+bool Camera::OnUpdate(float ts, winrt::Windows::System::VirtualKey key, winrt::Microsoft::UI::Input::PointerPoint point)
 {
-	//glm::vec2 mousePos = Input::GetMousePosition();
-	//glm::vec2 delta = (mousePos - m_LastMousePosition) * 0.002f;
-	//m_LastMousePosition = mousePos;
-
-	//if (!Input::IsMouseButtonDown(MouseButton::Right))
-	//{
-	//	Input::SetCursorMode(CursorMode::Normal);
-	//	return false;
-	//}
-
-	//Input::SetCursorMode(CursorMode::Locked);
-
 	bool moved = false;
+
+	glm::vec2 mousePos;
+	mousePos.x = point.Position().X;
+	mousePos.y = point.Position().Y;
+
+	glm::vec2 delta = (mousePos - m_LastMousePosition) * 0.002f;
+	m_LastMousePosition = mousePos;
 
 	const glm::vec3 upDirection(0.0f, 1.0f, 0.0f);
 	glm::vec3 rightDirection = glm::cross(m_ForwardDirection, upDirection);
@@ -77,17 +73,17 @@ bool Camera::OnUpdate(float ts, winrt::Windows::System::VirtualKey key)
 	}
 
 	//Rotation
-	//if (delta.x != 0.0f || delta.y != 0.0f)
-	//{
-	//	float pitchDelta = delta.y * GetRotationSpeed();
-	//	float yawDelta = delta.x * GetRotationSpeed();
+	if (delta.x != 0.0f || delta.y != 0.0f)
+	{
+		float pitchDelta = delta.y * GetRotationSpeed();
+		float yawDelta = delta.x * GetRotationSpeed();
 
-	//	glm::quat q = glm::normalize(glm::cross(glm::angleAxis(-pitchDelta, rightDirection),
-	//		glm::angleAxis(-yawDelta, glm::vec3(0.f, 1.0f, 0.0f))));
-	//	m_ForwardDirection = glm::rotate(q, m_ForwardDirection);
+		glm::quat q = glm::normalize(glm::cross(glm::angleAxis(-pitchDelta, rightDirection),
+			glm::angleAxis(-yawDelta, glm::vec3(0.f, 1.0f, 0.0f))));
+		m_ForwardDirection = glm::rotate(q, m_ForwardDirection);
 
-	//	moved = true;
-	//}
+		moved = true;
+	}
 
 	if (moved)
 	{

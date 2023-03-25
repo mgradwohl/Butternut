@@ -13,7 +13,7 @@
     
     Activated="OnWindowActivate" Closed="OnWindowClosed" SizeChanged="OnWindowResized" >
 
-    <Grid IsTabStop="True" IsHitTestVisible="True" KeyDown="OnKeyDown">
+    <Grid IsTabStop="True" IsHitTestVisible="True" KeyDown="OnKeyDown" KeyUp="OnKeyUp">
         <Grid.RowDefinitions>
             <RowDefinition Height="32"/>
             <RowDefinition Height="*"/>
