@@ -137,13 +137,16 @@ namespace winrt::Butternut::implementation
 
         float time = _frametimer.ElapsedMillis();
         float ts = time - _lastFrameTime;
-        ts = glm::min<float>(ts, 0.0333f);
+        //ts = glm::min<float>(ts, 0.0333f);
         _lastFrameTime = time;
 
         if (!_closing)
         {
-            _scene.OnUpdate(ts, _key, _point);
-            _renderer.ResetFrameIndex();
+            if (_scene.OnUpdate(ts, _key, _point))
+            {
+                _renderer.ResetFrameIndex();
+
+            }
             _renderer.OnResize(_canvasDevice, width, height, _dpi);
             _renderer.Render(_scene);
             args.DrawingSession().DrawImage(_renderer.GetImage());
@@ -188,7 +191,7 @@ namespace winrt::Butternut::implementation
         //{
         //    return;
         //}
-        _key = e.Key();
+        _key = winrt::Windows::System::VirtualKey::None;
 
         e.Handled(true);
     }
@@ -199,7 +202,7 @@ namespace winrt::Butternut::implementation
         //{
         //    return;
         //}
-        _key = winrt::Windows::System::VirtualKey::None;
+        _key = e.Key();
 
         e.Handled(true);
     }

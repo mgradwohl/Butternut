@@ -17,76 +17,61 @@ Camera::Camera(float verticalFOV, float nearClip, float farClip)
 
 bool Camera::OnUpdate(float ts, winrt::Windows::System::VirtualKey key, glm::vec2 mousePos)
 {
-	bool moved = false;
-
 	glm::vec2 delta = (mousePos - m_LastMousePosition) * 0.002f;
 	m_LastMousePosition = mousePos;
+	if ((delta.x == 0.0f || delta.y == 0.0f) && key == winrt::Windows::System::VirtualKey::None)
+	{
+		return false;
+	}
 
 	const glm::vec3 upDirection(0.0f, 1.0f, 0.0f);
-	glm::vec3 rightDirection = glm::cross(m_ForwardDirection, upDirection);
-
-	float speed = 1.0f;
+	const glm::vec3 rightDirection = glm::cross(m_ForwardDirection, upDirection);
+	const float speed = 1.0f;
 
  //Movement
 	if (key == winrt::Windows::System::VirtualKey::W)
 	{
 		m_Position += m_ForwardDirection * speed * ts;
 		ML_TRACE("Moving forwards.\n");
-		moved = true;
 	}
 	else if (key == winrt::Windows::System::VirtualKey::S)
 	{
 		m_Position -= m_ForwardDirection * speed * ts;
 		ML_TRACE("Moving backwards.\n");
-		moved = true;
 	}
 
 	if (key == winrt::Windows::System::VirtualKey::A)
 	{
-		m_Position -= rightDirection * speed * ts;
+		m_Position += rightDirection * speed * ts;
 		ML_TRACE("Moving left.\n");
-		moved = true;
 	}
 	else if (key == winrt::Windows::System::VirtualKey::D)
 	{
-		m_Position += rightDirection * speed * ts;
+		m_Position -= rightDirection * speed * ts;
 		ML_TRACE("Moving right.\n");
-		moved = true;
 	}
 
 	if (key == winrt::Windows::System::VirtualKey::Q)
 	{
-		m_Position -= upDirection * speed * ts;
+		m_Position += upDirection * speed * ts;
 		ML_TRACE("Moving up.\n");
-		moved = true;
 	}
 	else if (key == winrt::Windows::System::VirtualKey::E)
 	{
-		m_Position += upDirection * speed * ts;
+		m_Position -= upDirection * speed * ts;
 		ML_TRACE("Moving down.\n");
-		moved = true;
 	}
 
 	//Rotation
-	if (delta.x != 0.0f || delta.y != 0.0f)
-	{
-		float pitchDelta = delta.y * GetRotationSpeed();
-		float yawDelta = delta.x * GetRotationSpeed();
+	const float pitchDelta = delta.y * GetRotationSpeed();
+	const float yawDelta = delta.x * GetRotationSpeed();
 
-		glm::quat q = glm::normalize(glm::cross(glm::angleAxis(-pitchDelta, rightDirection),
-			glm::angleAxis(-yawDelta, glm::vec3(0.f, 1.0f, 0.0f))));
-		m_ForwardDirection = glm::rotate(q, m_ForwardDirection);
-
-		moved = true;
-	}
-
-	if (moved)
-	{
-		RecalculateView();
-		RecalculateRayDirections();
-	}
-
-	return moved;
+	const glm::quat q = glm::normalize(glm::cross(glm::angleAxis(pitchDelta, rightDirection), glm::angleAxis(yawDelta, glm::vec3(0.f, 1.0f, 0.0f))));
+	m_ForwardDirection = glm::rotate(q, m_ForwardDirection);
+	RecalculateView();
+	RecalculateRayDirections();
+		
+	return true;
 }
 
 void Camera::OnResize(uint32_t width, uint32_t height)
