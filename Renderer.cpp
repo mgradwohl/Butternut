@@ -25,8 +25,8 @@ namespace Utils {
 		//uint8_t g = (uint8_t)(color.g * 255.0f);
 		//uint8_t b = (uint8_t)(color.b * 255.0f);
 		//uint8_t a = (uint8_t)(color.a * 255.0f);
-
-		return winrt::Microsoft::UI::ColorHelper::FromArgb((uint8_t)(color.a * 255.0f), (uint8_t)(color.r * 255.0f), (uint8_t)(color.g * 255.0f), (uint8_t)(color.b * 255.0f));
+		return winrt::Windows::UI::Color{ (uint8_t)(color.a * 255.0f), (uint8_t)(color.r * 255.0f), (uint8_t)(color.g * 255.0f), (uint8_t)(color.b * 255.0f) };
+		//return winrt::Microsoft::UI::ColorHelper::FromArgb((uint8_t)(color.a * 255.0f), (uint8_t)(color.r * 255.0f), (uint8_t)(color.g * 255.0f), (uint8_t)(color.b * 255.0f));
 	}
 
 	//static uint32_t ConvertToRGBA(const glm::vec4& color)
@@ -166,8 +166,8 @@ void Renderer::Render(Scene& scene)
 				});
 		});
 
-	winrt::array_view<winrt::Windows::UI::Color> view{ m_ImageData };
-	m_FinalImage.SetPixelColors(view);
+	//winrt::array_view<winrt::Windows::UI::Color> view{ m_ImageData };
+	m_FinalImage.SetPixelColors(m_ImageData);
 	if (m_Settings.Accumulate)
 		m_FrameIndex++;
 	else
