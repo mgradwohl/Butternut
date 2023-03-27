@@ -92,11 +92,6 @@ namespace winrt::Butternut::implementation
         SetBestCanvasandWindowSizes();
     }
 
-    int MainWindow::ConvertToPixels(float dips)
-    {
-		return dips * _dpi / 96.0f;
-	}
-
     void MainWindow::StartGameLoop()
     {
         ML_METHOD;

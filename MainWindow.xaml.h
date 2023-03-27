@@ -89,7 +89,6 @@ namespace winrt::Butternut::implementation
         void SetBestCanvasandWindowSizes();
         void CanvasBoard_Draw(Microsoft::Graphics::Canvas::UI::Xaml::CanvasControl const& sender, Microsoft::Graphics::Canvas::UI::Xaml::CanvasDrawEventArgs const& args);
         void OnFirstRun();
-        int ConvertToPixels(float dips);
 
     private:
         Microsoft::Graphics::Canvas::CanvasDevice _canvasDevice{ nullptr };
