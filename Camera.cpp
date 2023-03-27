@@ -26,39 +26,39 @@ bool Camera::OnUpdate(float ts, winrt::Windows::System::VirtualKey key, glm::vec
 
 	const glm::vec3 upDirection(0.0f, 1.0f, 0.0f);
 	const glm::vec3 rightDirection = glm::cross(m_ForwardDirection, upDirection);
-	const float speed = 1.0f;
+	const float posdelta = glm::clamp<float>(0.1f * ts, 0, 3);
 
  //Movement
 	if (key == winrt::Windows::System::VirtualKey::W)
 	{
-		m_Position += m_ForwardDirection * speed * ts;
+		m_Position += m_ForwardDirection * posdelta;
 		ML_TRACE("Moving forwards.\n");
 	}
 	else if (key == winrt::Windows::System::VirtualKey::S)
 	{
-		m_Position -= m_ForwardDirection * speed * ts;
+		m_Position -= m_ForwardDirection * posdelta;
 		ML_TRACE("Moving backwards.\n");
 	}
 
 	if (key == winrt::Windows::System::VirtualKey::A)
 	{
-		m_Position += rightDirection * speed * ts;
+		m_Position += rightDirection * posdelta;
 		ML_TRACE("Moving left.\n");
 	}
 	else if (key == winrt::Windows::System::VirtualKey::D)
 	{
-		m_Position -= rightDirection * speed * ts;
+		m_Position -= rightDirection * posdelta;
 		ML_TRACE("Moving right.\n");
 	}
 
 	if (key == winrt::Windows::System::VirtualKey::Q)
 	{
-		m_Position += upDirection * speed * ts;
+		m_Position += upDirection * posdelta;
 		ML_TRACE("Moving up.\n");
 	}
 	else if (key == winrt::Windows::System::VirtualKey::E)
 	{
-		m_Position -= upDirection * speed * ts;
+		m_Position -= upDirection * posdelta;
 		ML_TRACE("Moving down.\n");
 	}
 

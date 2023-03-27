@@ -109,8 +109,8 @@ namespace winrt::Butternut::implementation
         fps.Start();
 
         _frametimer.Reset();
-        const int width = canvasBoard().Size().Width;
-        const int height = canvasBoard().Size().Height;
+        //const int width = canvasBoard().Size().Width;
+        //const int height = canvasBoard().Size().Height;
         // TODO
         _scene.Init(1200, 750);
 
@@ -185,7 +185,7 @@ namespace winrt::Butternut::implementation
         result;
     }
 
-    void MainWindow::OnKeyUp(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::KeyRoutedEventArgs const& e)
+    void MainWindow::OnKeyUp([[maybe_unused]]winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::KeyRoutedEventArgs const& e)
     {
         //if (sender != canvasBoard())
         //{
@@ -196,7 +196,7 @@ namespace winrt::Butternut::implementation
         e.Handled(true);
     }
 
-    void MainWindow::OnKeyDown(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::KeyRoutedEventArgs const& e)
+    void MainWindow::OnKeyDown([[maybe_unused]] winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::KeyRoutedEventArgs const& e)
     {
         //if (sender != canvasBoard())
         //{
