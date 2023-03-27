@@ -250,33 +250,36 @@ namespace winrt::Butternut::implementation
     void MainWindow::SetBestCanvasandWindowSizes()
     {
         ML_METHOD;
-        //if (_dpi == 0.0f)
-        //{
-        //    return;
-        //}
+        if (_dpi == 0.0f)
+        {
+            return;
+        }
 
-        //const Microsoft::UI::WindowId idWnd = Microsoft::UI::GetWindowIdFromWindow(GetWindowHandle());
+        const Microsoft::UI::WindowId idWnd = Microsoft::UI::GetWindowIdFromWindow(GetWindowHandle());
 
-        //// get the window size
-        //Microsoft::UI::Windowing::DisplayArea displayAreaFallback(nullptr);
-        //Microsoft::UI::Windowing::DisplayArea displayArea = Microsoft::UI::Windowing::DisplayArea::GetFromWindowId(idWnd, Microsoft::UI::Windowing::DisplayAreaFallback::Nearest);
-        //const Windows::Graphics::RectInt32 rez = displayArea.OuterBounds();
+        // get the window size
+        Microsoft::UI::Windowing::DisplayArea displayAreaFallback(nullptr);
+        Microsoft::UI::Windowing::DisplayArea displayArea = Microsoft::UI::Windowing::DisplayArea::GetFromWindowId(idWnd, Microsoft::UI::Windowing::DisplayAreaFallback::Nearest);
+        const Windows::Graphics::RectInt32 rez = displayArea.OuterBounds();
 
-        //// setup offsets for sensible default window size
-        //constexpr int border = 20; // from XAML TODO can we call 'measure' and just retrieve the border width?
-        //constexpr int stackpanelwidth = 200; // from XAML TODO can we call 'measure' and just retrieve the stackpanel width?
-        //constexpr int statusheight = 28;
+        // setup offsets for sensible default window size
+        constexpr int border = 20; // from XAML TODO can we call 'measure' and just retrieve the border width?
+        constexpr int stackpanelwidth = 200; // from XAML TODO can we call 'measure' and just retrieve the stackpanel width?
+        constexpr int statusheight = 28;
 
-        // ResizeClient wants pixels, not DIPs
-        // resize the window
-        // TODO hack
-        //const int wndWidth = _width + ((stackpanelwidth + border) * _dpi / 96.0f);
-        //const int wndHeight = _height + ((border + statusheight) * _dpi / 96.0f);
+         //ResizeClient wants pixels, not DIPs
+         //resize the window
+         //TODO hack
+        const int w = std::max<int>(canvasBoard().DesiredSize().Width, _width);
+        const int h = std::max<int>(canvasBoard().DesiredSize().Height, _height);
 
-        //if (auto appWnd = Microsoft::UI::Windowing::AppWindow::GetFromWindowId(idWnd); appWnd)
-        //{
-        //    appWnd.ResizeClient(Windows::Graphics::SizeInt32{ wndWidth, wndHeight });
-        //}
+        const int wndWidth = (w + stackpanelwidth + border) * _dpi / 96.0f;
+        const int wndHeight = (h + border + statusheight) * _dpi / 96.0f;
+
+        if (auto appWnd = Microsoft::UI::Windowing::AppWindow::GetFromWindowId(idWnd); appWnd)
+        {
+            appWnd.ResizeClient(Windows::Graphics::SizeInt32{ wndWidth, wndHeight });
+        }
     }
 
     void MainWindow::SetStatus(const std::string& message)

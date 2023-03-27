@@ -79,7 +79,8 @@ void Renderer::OnResize(winrt::Microsoft::Graphics::Canvas::CanvasDevice& device
 		}
 	}
 
-	m_FinalImage = winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget(device, 100, 100, dpi); 
+	// HACK TODO
+	m_FinalImage = winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget(device, 10, 10, dpi); 
 	float w = m_FinalImage.ConvertPixelsToDips(_width);
 	float h = m_FinalImage.ConvertPixelsToDips(_height);
 

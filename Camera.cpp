@@ -12,12 +12,12 @@ Camera::Camera(float verticalFOV, float nearClip, float farClip)
 	: m_VerticalFOV(verticalFOV), m_NearClip(nearClip), m_FarClip(farClip)
 {
 	m_ForwardDirection = glm::vec3(0, 0, 1);
-	m_Position = glm::vec3(0, 0, -6);
+	m_Position = glm::vec3(0, 0, -8);
 }
 
 bool Camera::OnUpdate(float ts, winrt::Windows::System::VirtualKey key, glm::vec2 mousePos)
 {
-	glm::vec2 delta = (mousePos - m_LastMousePosition) * 0.002f;
+	const glm::vec2 delta = (mousePos - m_LastMousePosition) * 0.002f;
 	m_LastMousePosition = mousePos;
 	if ((delta.x == 0.0f || delta.y == 0.0f) && key == winrt::Windows::System::VirtualKey::None)
 	{
@@ -115,8 +115,8 @@ void Camera::RecalculateRayDirections()
 			glm::vec2 coord = { (float)x / (float)m_ViewportWidth, (float)y / (float)m_ViewportHeight };
 			coord = coord * 2.0f - 1.0f; // -1 -> 1
 
-			glm::vec4 target = m_InverseProjection * glm::vec4(coord.x, coord.y, 1, 1);
-			glm::vec3 rayDirection = glm::vec3(m_InverseView * glm::vec4(glm::normalize(glm::vec3(target) / target.w), 0)); // World space
+			const glm::vec4 target = m_InverseProjection * glm::vec4(coord.x, coord.y, 1, 1);
+			const glm::vec3 rayDirection = glm::vec3(m_InverseView * glm::vec4(glm::normalize(glm::vec3(target) / target.w), 0)); // World space
 			m_RayDirections[x + y * m_ViewportWidth] = rayDirection;
 		}
 	}
