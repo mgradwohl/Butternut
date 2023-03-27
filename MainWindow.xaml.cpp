@@ -226,10 +226,10 @@ namespace winrt::Butternut::implementation
         {
             return;
         }
-        _point.x = e.GetCurrentPoint(nullptr).Position().X;
-        _point.x = (_point.x * 2) - _width;
-        _point.y = e.GetCurrentPoint(nullptr).Position().Y;
-        _point.y = (_point.y * 2) - _height;
+        _point.x = e.GetCurrentPoint(canvasBoard()).Position().X;
+        _point.x = (_point.x * 2) - canvasBoard().Size().Width;
+        _point.y = e.GetCurrentPoint(canvasBoard()).Position().Y;
+        _point.y = (_point.y * 2) - canvasBoard().Size().Height;
 
         e.Handled(true);
         InvalidateIfNeeded();
