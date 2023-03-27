@@ -26,7 +26,7 @@ bool Camera::OnUpdate(float ts, winrt::Windows::System::VirtualKey key, glm::vec
 
 	const glm::vec3 upDirection(0.0f, 1.0f, 0.0f);
 	const glm::vec3 rightDirection = glm::cross(m_ForwardDirection, upDirection);
-	const float posdelta = glm::clamp<float>(0.1f * ts, 0, 3);
+	const float posdelta = glm::clamp<float>(0.005f * ts, 0, 3);
 
  //Movement
 	if (key == winrt::Windows::System::VirtualKey::W)
