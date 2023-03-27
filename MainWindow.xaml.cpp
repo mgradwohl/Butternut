@@ -55,6 +55,9 @@ namespace winrt::Butternut::implementation
         ML_INFO("Log Initialized");
         ML_METHOD;
 
+        _width = 1200;
+        _height = 750;
+
         //https://github.com/microsoft/cppwinrt/tree/master/nuget#initializecomponent
         MainWindowT::InitializeComponent();
 
@@ -109,10 +112,8 @@ namespace winrt::Butternut::implementation
         fps.Start();
 
         _frametimer.Reset();
-        //const int width = canvasBoard().Size().Width;
-        //const int height = canvasBoard().Size().Height;
         // TODO
-        _scene.Init(1200, 750);
+        _scene.Init(_width, _height);
 
         timer.Start();
         _lastFrameTime = _frametimer.ElapsedMillis();
@@ -132,13 +133,11 @@ namespace winrt::Butternut::implementation
     {
         ML_METHOD;
 
-        const int width = canvasBoard().Size().Width;
-        const int height = canvasBoard().Size().Height;
-
         float time = _frametimer.ElapsedMillis();
         float ts = time - _lastFrameTime;
         //ts = glm::min<float>(ts, 0.0333f);
         _lastFrameTime = time;
+        winrt::Windows::Foundation::Rect rectDest (0,0, canvasBoard().Size().Width, canvasBoard().Size().Height);
 
         if (!_closing)
         {
@@ -147,9 +146,9 @@ namespace winrt::Butternut::implementation
                 _renderer.ResetFrameIndex();
 
             }
-            _renderer.OnResize(_canvasDevice, width, height, _dpi);
+            _renderer.OnResize(_canvasDevice, _width, _height, _dpi);
             _renderer.Render(_scene);
-            args.DrawingSession().DrawImage(_renderer.GetImage());
+            args.DrawingSession().DrawImage(_renderer.GetImage(), rectDest);
         }
 
         ML_TRACE("Last frame took {}ms", ts);
@@ -187,10 +186,6 @@ namespace winrt::Butternut::implementation
 
     void MainWindow::OnKeyUp([[maybe_unused]]winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::KeyRoutedEventArgs const& e)
     {
-        //if (sender != canvasBoard())
-        //{
-        //    return;
-        //}
         _key = winrt::Windows::System::VirtualKey::None;
 
         e.Handled(true);
@@ -198,10 +193,6 @@ namespace winrt::Butternut::implementation
 
     void MainWindow::OnKeyDown([[maybe_unused]] winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::KeyRoutedEventArgs const& e)
     {
-        //if (sender != canvasBoard())
-        //{
-        //    return;
-        //}
         _key = e.Key();
 
         e.Handled(true);
@@ -231,36 +222,27 @@ namespace winrt::Butternut::implementation
 
     void MainWindow::OnPointerMoved([[maybe_unused]] winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e)
     {
-        const bool on = (_PointerMode == PointerMode::Right);
-
-        if (!on)
+        if (_PointerMode != PointerMode::Right)
         {
             return;
         }
-        _point.x = e.GetCurrentPoint(canvasBoard()).Position().X;
-        _point.y = e.GetCurrentPoint(canvasBoard()).Position().Y;
+        _point.x = e.GetCurrentPoint(nullptr).Position().X;
+        _point.x = (_point.x * 2) - _width;
+        _point.y = e.GetCurrentPoint(nullptr).Position().Y;
+        _point.y = (_point.y * 2) - _height;
 
-        //for (const Microsoft::UI::Input::PointerPoint& point : e.GetIntermediatePoints(canvasBoard().as<Microsoft::UI::Xaml::UIElement>()))
-        //{
-
-        //    //ML_TRACE("Point {},{} Cell grid {},{}", point.Position().X, point.Position().Y, g.x, g.y);
-        //    //SetStatus("Drawing. Left mouse button to draw. Right right mouse button to erase.");
-
-        //}
         e.Handled(true);
         InvalidateIfNeeded();
     }
 
     void MainWindow::OnPointerReleased([[maybe_unused]] winrt::Windows::Foundation::IInspectable const& sender, [[maybe_unused]] winrt::Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e) noexcept
     {
-        //SetStatus("Drawing mode completed.");
         _PointerMode = PointerMode::None;
         e.Handled(true);
     }
     
     void MainWindow::OnPointerExited([[maybe_unused]] winrt::Windows::Foundation::IInspectable const& sender, [[maybe_unused]] winrt::Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e) noexcept
     {
-        //SetStatus("Drawing mode completed.");
         _PointerMode = PointerMode::None;
         e.Handled(true);
     }
@@ -268,35 +250,33 @@ namespace winrt::Butternut::implementation
     void MainWindow::SetBestCanvasandWindowSizes()
     {
         ML_METHOD;
-        if (_dpi == 0.0f)
-        {
-            return;
-        }
+        //if (_dpi == 0.0f)
+        //{
+        //    return;
+        //}
 
-        const Microsoft::UI::WindowId idWnd = Microsoft::UI::GetWindowIdFromWindow(GetWindowHandle());
+        //const Microsoft::UI::WindowId idWnd = Microsoft::UI::GetWindowIdFromWindow(GetWindowHandle());
 
-        // get the window size
-        Microsoft::UI::Windowing::DisplayArea displayAreaFallback(nullptr);
-        Microsoft::UI::Windowing::DisplayArea displayArea = Microsoft::UI::Windowing::DisplayArea::GetFromWindowId(idWnd, Microsoft::UI::Windowing::DisplayAreaFallback::Nearest);
-        const Windows::Graphics::RectInt32 rez = displayArea.OuterBounds();
+        //// get the window size
+        //Microsoft::UI::Windowing::DisplayArea displayAreaFallback(nullptr);
+        //Microsoft::UI::Windowing::DisplayArea displayArea = Microsoft::UI::Windowing::DisplayArea::GetFromWindowId(idWnd, Microsoft::UI::Windowing::DisplayAreaFallback::Nearest);
+        //const Windows::Graphics::RectInt32 rez = displayArea.OuterBounds();
 
-        // setup offsets for sensible default window size
-        constexpr int border = 20; // from XAML TODO can we call 'measure' and just retrieve the border width?
-        constexpr int stackpanelwidth = 200; // from XAML TODO can we call 'measure' and just retrieve the stackpanel width?
-        constexpr int statusheight = 28;
+        //// setup offsets for sensible default window size
+        //constexpr int border = 20; // from XAML TODO can we call 'measure' and just retrieve the border width?
+        //constexpr int stackpanelwidth = 200; // from XAML TODO can we call 'measure' and just retrieve the stackpanel width?
+        //constexpr int statusheight = 28;
 
         // ResizeClient wants pixels, not DIPs
-        // TODO hack
-        const int width = 1200; //canvasBoard().Size().Width;
-        const int height = 750; //canvasBoard().Size().Height;
-        const int wndWidth = width + ((stackpanelwidth + border) * _dpi / 96.0f);
-        const int wndHeight = height + ((border + statusheight) * _dpi / 96.0f);
-
         // resize the window
-        if (auto appWnd = Microsoft::UI::Windowing::AppWindow::GetFromWindowId(idWnd); appWnd)
-        {
-            appWnd.ResizeClient(Windows::Graphics::SizeInt32{ wndWidth, wndHeight });
-        }
+        // TODO hack
+        //const int wndWidth = _width + ((stackpanelwidth + border) * _dpi / 96.0f);
+        //const int wndHeight = _height + ((border + statusheight) * _dpi / 96.0f);
+
+        //if (auto appWnd = Microsoft::UI::Windowing::AppWindow::GetFromWindowId(idWnd); appWnd)
+        //{
+        //    appWnd.ResizeClient(Windows::Graphics::SizeInt32{ wndWidth, wndHeight });
+        //}
     }
 
     void MainWindow::SetStatus(const std::string& message)
@@ -399,6 +379,9 @@ namespace winrt::Butternut::implementation
 
     void MainWindow::CanvasBoard_SizeChanged([[maybe_unused]] IInspectable const& sender, [[maybe_unused]] winrt::Microsoft::UI::Xaml::SizeChangedEventArgs const& e)
     {
+        sender.as<Microsoft::Graphics::Canvas::UI::Xaml::CanvasControl>().Height(_height);
+        sender.as<Microsoft::Graphics::Canvas::UI::Xaml::CanvasControl>().Width(_width);
+        
         //_renderer.Size(BoardWidth(), BoardHeight());
     }
 
