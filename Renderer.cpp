@@ -12,6 +12,7 @@
 #include <winrt/Windows.Storage.Streams.h>
 #include <execution>
 #include <vector>
+#include <cmath>
 
 #include<gsl/gsl>
 
@@ -165,7 +166,7 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 	for (int i = 0; i < bounces; i++)
 	{
 		Renderer::HitPayload payload = TraceRay(ray);
-		if (payload.HitDistance < 0.0f)
+		if (std::signbit(payload.HitDistance))
 		{
 			color += skyColor * multiplier;
 			break;
