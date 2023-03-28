@@ -167,6 +167,7 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 	for (int i = 0; i < bounces; i++)
 	{
 		Renderer::HitPayload payload = TraceRay(ray);
+		// TODO this hits perf testing because the CPU can't predict the branch
 		if (std::signbit(payload.HitDistance))
 		{
 			color += skyColor * multiplier;
