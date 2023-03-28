@@ -89,7 +89,6 @@ namespace winrt::Butternut::implementation
         void SetBestCanvasandWindowSizes();
         void CanvasBoard_Draw(Microsoft::Graphics::Canvas::UI::Xaml::CanvasControl const& sender, Microsoft::Graphics::Canvas::UI::Xaml::CanvasDrawEventArgs const& args);
         void OnFirstRun();
-        int ConvertToPixels(float dips);
 
     private:
         Microsoft::Graphics::Canvas::CanvasDevice _canvasDevice{ nullptr };
@@ -100,6 +99,8 @@ namespace winrt::Butternut::implementation
         FPScounter fps{};
         float _dpi{ 0.0f };
         float _lastFrameTime{ 0 };
+        int _width;
+        int _height;
 
         PointerMode _PointerMode = PointerMode::None;
         winrt::Windows::System::VirtualKey _key = winrt::Windows::System::VirtualKey::None;

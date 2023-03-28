@@ -12,12 +12,12 @@ Camera::Camera(float verticalFOV, float nearClip, float farClip)
 	: m_VerticalFOV(verticalFOV), m_NearClip(nearClip), m_FarClip(farClip)
 {
 	m_ForwardDirection = glm::vec3(0, 0, 1);
-	m_Position = glm::vec3(0, 0, -6);
+	m_Position = glm::vec3(0, 0, -8);
 }
 
 bool Camera::OnUpdate(float ts, winrt::Windows::System::VirtualKey key, glm::vec2 mousePos)
 {
-	glm::vec2 delta = (mousePos - m_LastMousePosition) * 0.002f;
+	const glm::vec2 delta = (mousePos - m_LastMousePosition) * 0.002f;
 	m_LastMousePosition = mousePos;
 	if ((delta.x == 0.0f || delta.y == 0.0f) && key == winrt::Windows::System::VirtualKey::None)
 	{
@@ -26,39 +26,39 @@ bool Camera::OnUpdate(float ts, winrt::Windows::System::VirtualKey key, glm::vec
 
 	const glm::vec3 upDirection(0.0f, 1.0f, 0.0f);
 	const glm::vec3 rightDirection = glm::cross(m_ForwardDirection, upDirection);
-	const float speed = 1.0f;
+	const float posdelta = glm::clamp<float>(0.005f * ts, 0, 3);
 
  //Movement
 	if (key == winrt::Windows::System::VirtualKey::W)
 	{
-		m_Position += m_ForwardDirection * speed * ts;
+		m_Position += m_ForwardDirection * posdelta;
 		ML_TRACE("Moving forwards.\n");
 	}
 	else if (key == winrt::Windows::System::VirtualKey::S)
 	{
-		m_Position -= m_ForwardDirection * speed * ts;
+		m_Position -= m_ForwardDirection * posdelta;
 		ML_TRACE("Moving backwards.\n");
 	}
 
 	if (key == winrt::Windows::System::VirtualKey::A)
 	{
-		m_Position += rightDirection * speed * ts;
+		m_Position += rightDirection * posdelta;
 		ML_TRACE("Moving left.\n");
 	}
 	else if (key == winrt::Windows::System::VirtualKey::D)
 	{
-		m_Position -= rightDirection * speed * ts;
+		m_Position -= rightDirection * posdelta;
 		ML_TRACE("Moving right.\n");
 	}
 
 	if (key == winrt::Windows::System::VirtualKey::Q)
 	{
-		m_Position += upDirection * speed * ts;
+		m_Position += upDirection * posdelta;
 		ML_TRACE("Moving up.\n");
 	}
 	else if (key == winrt::Windows::System::VirtualKey::E)
 	{
-		m_Position -= upDirection * speed * ts;
+		m_Position -= upDirection * posdelta;
 		ML_TRACE("Moving down.\n");
 	}
 
@@ -66,7 +66,7 @@ bool Camera::OnUpdate(float ts, winrt::Windows::System::VirtualKey key, glm::vec
 	const float pitchDelta = delta.y * GetRotationSpeed();
 	const float yawDelta = delta.x * GetRotationSpeed();
 
-	const glm::quat q = glm::normalize(glm::cross(glm::angleAxis(pitchDelta, rightDirection), glm::angleAxis(yawDelta, glm::vec3(0.f, 1.0f, 0.0f))));
+	const glm::quat q = glm::normalize(glm::cross(glm::angleAxis(-pitchDelta, rightDirection), glm::angleAxis(yawDelta, glm::vec3(0.f, 1.0f, 0.0f))));
 	m_ForwardDirection = glm::rotate(q, m_ForwardDirection);
 	RecalculateView();
 	RecalculateRayDirections();
@@ -115,8 +115,8 @@ void Camera::RecalculateRayDirections()
 			glm::vec2 coord = { (float)x / (float)m_ViewportWidth, (float)y / (float)m_ViewportHeight };
 			coord = coord * 2.0f - 1.0f; // -1 -> 1
 
-			glm::vec4 target = m_InverseProjection * glm::vec4(coord.x, coord.y, 1, 1);
-			glm::vec3 rayDirection = glm::vec3(m_InverseView * glm::vec4(glm::normalize(glm::vec3(target) / target.w), 0)); // World space
+			const glm::vec4 target = m_InverseProjection * glm::vec4(coord.x, coord.y, 1, 1);
+			const glm::vec3 rayDirection = glm::vec3(m_InverseView * glm::vec4(glm::normalize(glm::vec3(target) / target.w), 0)); // World space
 			m_RayDirections[x + y * m_ViewportWidth] = rayDirection;
 		}
 	}
