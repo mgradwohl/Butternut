@@ -152,6 +152,7 @@ namespace winrt::Butternut::implementation
             args.DrawingSession().DrawImage(_renderer.GetImage());
         }
 
+        _key = winrt::Windows::System::VirtualKey::None;
         ML_TRACE("Last frame took {}ms", ts);
         SetStatus(std::format("Last frame time {}ms", ts));
         PumpProperties();
