@@ -45,6 +45,18 @@
       <Configuration>Debug</Configuration>
       <Platform>ARM64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Distro|ARM64">
+      <Configuration>Distro</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Distro|Win32">
+      <Configuration>Distro</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Distro|x64">
+      <Configuration>Distro</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release Test|ARM64">
       <Configuration>Release Test</Configuration>
       <Platform>ARM64</Platform>
@@ -81,6 +93,11 @@
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Distro'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <LinkIncremental>false</LinkIncremental>
@@ -183,6 +200,56 @@
       <SetChecksum Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">true</SetChecksum>
       <SetChecksum Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</SetChecksum>
       <SetChecksum Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</SetChecksum>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Distro'">
+    <ClCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions); GLM_FORCE_INTRINSICS; GLM_FORCE_LEFT_HANDED;GLM_FORCE_DEPTH_ZERO_TO_ONE</PreprocessorDefinitions>
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Distro|x64'">stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Distro|x64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);$(ProjectDir)..\VulkanSDK\1.3.239.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include;</AdditionalIncludeDirectories>
+      <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Distro|x64'">Speed</FavorSizeOrSpeed>
+      <EnableFiberSafeOptimizations Condition="'$(Configuration)|$(Platform)'=='Distro|x64'">true</EnableFiberSafeOptimizations>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Distro|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Distro|ARM64'">Speed</FavorSizeOrSpeed>
+      <EnableFiberSafeOptimizations Condition="'$(Configuration)|$(Platform)'=='Distro|ARM64'">true</EnableFiberSafeOptimizations>
+      <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Distro|Win32'">Speed</FavorSizeOrSpeed>
+      <EnableFiberSafeOptimizations Condition="'$(Configuration)|$(Platform)'=='Distro|Win32'">true</EnableFiberSafeOptimizations>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Distro|Win32'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Distro|ARM64'">CPUExtensionRequirementsARMv80</EnableEnhancedInstructionSet>
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Distro|ARM64'">stdcpp20</LanguageStandard>
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Distro|Win32'">stdcpp20</LanguageStandard>
+      <LanguageStandard_C Condition="'$(Configuration)|$(Platform)'=='Distro|ARM64'">Default</LanguageStandard_C>
+      <LanguageStandard_C Condition="'$(Configuration)|$(Platform)'=='Distro|Win32'">Default</LanguageStandard_C>
+      <LanguageStandard_C Condition="'$(Configuration)|$(Platform)'=='Distro|x64'">Default</LanguageStandard_C>
+      <EnableModules Condition="'$(Configuration)|$(Platform)'=='Distro|ARM64'">false</EnableModules>
+      <BuildStlModules Condition="'$(Configuration)|$(Platform)'=='Distro|ARM64'">false</BuildStlModules>
+      <EnableModules Condition="'$(Configuration)|$(Platform)'=='Distro|Win32'">false</EnableModules>
+      <BuildStlModules Condition="'$(Configuration)|$(Platform)'=='Distro|Win32'">false</BuildStlModules>
+      <EnableModules Condition="'$(Configuration)|$(Platform)'=='Distro|x64'">false</EnableModules>
+      <BuildStlModules Condition="'$(Configuration)|$(Platform)'=='Distro|x64'">false</BuildStlModules>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Distro|ARM64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);$(ProjectDir)..\VulkanSDK\1.3.239.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Distro|Win32'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);$(ProjectDir)..\VulkanSDK\1.3.239.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include;</AdditionalIncludeDirectories>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Distro|ARM64'">false</CompileAsManaged>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Distro|Win32'">false</CompileAsManaged>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Distro|x64'">false</CompileAsManaged>
+      <StringPooling Condition="'$(Configuration)|$(Platform)'=='Distro|ARM64'">true</StringPooling>
+      <StringPooling Condition="'$(Configuration)|$(Platform)'=='Distro|Win32'">true</StringPooling>
+      <StringPooling Condition="'$(Configuration)|$(Platform)'=='Distro|x64'">true</StringPooling>
+      <DebugInformationFormat Condition="'$(Configuration)|$(Platform)'=='Distro|ARM64'">None</DebugInformationFormat>
+      <DebugInformationFormat Condition="'$(Configuration)|$(Platform)'=='Distro|Win32'">None</DebugInformationFormat>
+      <DebugInformationFormat Condition="'$(Configuration)|$(Platform)'=='Distro|x64'">None</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <LinkTimeCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Distro|x64'">UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <LinkTimeCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Distro|Win32'">UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <SetChecksum Condition="'$(Configuration)|$(Platform)'=='Distro|ARM64'">true</SetChecksum>
+      <SetChecksum Condition="'$(Configuration)|$(Platform)'=='Distro|Win32'">true</SetChecksum>
+      <SetChecksum Condition="'$(Configuration)|$(Platform)'=='Distro|x64'">true</SetChecksum>
+      <GenerateDebugInformation Condition="'$(Configuration)|$(Platform)'=='Distro|ARM64'">false</GenerateDebugInformation>
+      <GenerateDebugInformation Condition="'$(Configuration)|$(Platform)'=='Distro|Win32'">false</GenerateDebugInformation>
+      <GenerateDebugInformation Condition="'$(Configuration)|$(Platform)'=='Distro|x64'">false</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release Test'">

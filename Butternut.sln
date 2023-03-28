@@ -10,6 +10,9 @@ Global
 		Debug|ARM64 = Debug|ARM64
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Distro|ARM64 = Distro|ARM64
+		Distro|x64 = Distro|x64
+		Distro|x86 = Distro|x86
 		Release Test|ARM64 = Release Test|ARM64
 		Release Test|x64 = Release Test|x64
 		Release Test|x86 = Release Test|x86
@@ -27,6 +30,15 @@ Global
 		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Debug|x86.ActiveCfg = Debug|Win32
 		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Debug|x86.Build.0 = Debug|Win32
 		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Debug|x86.Deploy.0 = Debug|Win32
+		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Distro|ARM64.ActiveCfg = Distro|ARM64
+		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Distro|ARM64.Build.0 = Distro|ARM64
+		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Distro|ARM64.Deploy.0 = Distro|ARM64
+		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Distro|x64.ActiveCfg = Distro|x64
+		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Distro|x64.Build.0 = Distro|x64
+		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Distro|x64.Deploy.0 = Distro|x64
+		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Distro|x86.ActiveCfg = Distro|Win32
+		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Distro|x86.Build.0 = Distro|Win32
+		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Distro|x86.Deploy.0 = Distro|Win32
 		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Release Test|ARM64.ActiveCfg = Release Test|ARM64
 		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Release Test|ARM64.Build.0 = Release Test|ARM64
 		{61220DC4-3B4A-4488-AAD7-B00E3255B726}.Release Test|ARM64.Deploy.0 = Release Test|ARM64
