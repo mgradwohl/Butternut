@@ -15,42 +15,16 @@
 
 #include<gsl/gsl>
 
-#include "Random.h"
+//#include "Random.h"
+//#include "RandomFloat.h"
+#include "RandomVecWithinCone.h"
 #include "Log.h"
 
 namespace Utils {
 	static winrt::Windows::UI::Color ConvertToColor(const glm::vec4& color)
 	{
-		//uint8_t r = (uint8_t)(color.r * 255.0f);
-		//uint8_t g = (uint8_t)(color.g * 255.0f);
-		//uint8_t b = (uint8_t)(color.b * 255.0f);
-		//uint8_t a = (uint8_t)(color.a * 255.0f);
 		return winrt::Windows::UI::Color{ (uint8_t)(color.a * 255.0f), (uint8_t)(color.r * 255.0f), (uint8_t)(color.g * 255.0f), (uint8_t)(color.b * 255.0f) };
-		//return winrt::Microsoft::UI::ColorHelper::FromArgb((uint8_t)(color.a * 255.0f), (uint8_t)(color.r * 255.0f), (uint8_t)(color.g * 255.0f), (uint8_t)(color.b * 255.0f));
 	}
-
-	//static uint32_t ConvertToRGBA(const glm::vec4& color)
-	//{
-	//	uint8_t r = (uint8_t)(color.r * 255.0f);
-	//	uint8_t g = (uint8_t)(color.g * 255.0f);
-	//	uint8_t b = (uint8_t)(color.b * 255.0f);
-	//	uint8_t a = (uint8_t)(color.a * 255.0f);
-
-	//	uint32_t result = (a << 24) | (b << 16) | (g << 8) | r;
-	//	return result;
-	//}
-
-
-	//static uint32_t ConvertToBGRA(const glm::vec4& color)
-	//{
-	//	uint8_t r = (uint8_t)(color.r * 255.0f);
-	//	uint8_t g = (uint8_t)(color.g * 255.0f);
-	//	uint8_t b = (uint8_t)(color.b * 255.0f);
-	//	uint8_t a = (uint8_t)(color.a * 255.0f);
-
-	//	uint32_t result = (b << 24) | (g << 16) | (r << 8) | a;
-	//	return result;
-	//}
 }
 
 winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget& Renderer::GetImage()
@@ -208,8 +182,14 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 		multiplier *= 0.5f;
 
 		ray.Origin = payload.WorldPosition + payload.WorldNormal * 0.0001f;
+		//ray.Direction = glm::reflect(ray.Direction,
+		//	payload.WorldNormal + material.Roughness * winrt::Butternut::implementation::Random::Vec3(-0.5f, 0.5f));
+
+		//ray.Direction = glm::reflect(ray.Direction,
+		//	payload.WorldNormal + material.Roughness * ::Util::RandomFloat::Vec3WithinCone());
+
 		ray.Direction = glm::reflect(ray.Direction,
-			payload.WorldNormal + material.Roughness * winrt::Butternut::implementation::Random::Vec3(-0.5f, 0.5f));
+			payload.WorldNormal + material.Roughness * ::Util::RandomVecWithinCone::Vec3WithinCone());
 	}
 	return glm::vec4(color, 1.0f);
 }
