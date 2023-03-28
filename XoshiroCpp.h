@@ -754,7 +754,7 @@ namespace XoshiroCpp
 		std::uint64_t s2 = 0;
 		std::uint64_t s3 = 0;
 
-		for (std::uint64_t jump : JUMP)
+		for (const std::uint64_t jump : JUMP)
 		{
 			for (int b = 0; b < 64; ++b)
 			{
@@ -784,7 +784,7 @@ namespace XoshiroCpp
 		std::uint64_t s2 = 0;
 		std::uint64_t s3 = 0;
 
-		for (std::uint64_t jump : LONG_JUMP)
+		for (const std::uint64_t jump : LONG_JUMP)
 		{
 			for (int b = 0; b < 64; ++b)
 			{
@@ -857,7 +857,7 @@ namespace XoshiroCpp
 		std::uint64_t s2 = 0;
 		std::uint64_t s3 = 0;
 
-		for (std::uint64_t jump : JUMP)
+		for (const std::uint64_t jump : JUMP)
 		{
 			for (int b = 0; b < 64; ++b)
 			{
@@ -887,7 +887,7 @@ namespace XoshiroCpp
 		std::uint64_t s2 = 0;
 		std::uint64_t s3 = 0;
 
-		for (std::uint64_t jump : LONG_JUMP)
+		for (const std::uint64_t jump : LONG_JUMP)
 		{
 			for (int b = 0; b < 64; ++b)
 			{
@@ -960,7 +960,7 @@ namespace XoshiroCpp
 		std::uint64_t s2 = 0;
 		std::uint64_t s3 = 0;
 
-		for (std::uint64_t jump : JUMP)
+		for (const std::uint64_t jump : JUMP)
 		{
 			for (int b = 0; b < 64; ++b)
 			{
@@ -990,7 +990,7 @@ namespace XoshiroCpp
 		std::uint64_t s2 = 0;
 		std::uint64_t s3 = 0;
 
-		for (std::uint64_t jump : LONG_JUMP)
+		for (const std::uint64_t jump : LONG_JUMP)
 		{
 			for (int b = 0; b < 64; ++b)
 			{
@@ -1059,7 +1059,7 @@ namespace XoshiroCpp
 		std::uint64_t s0 = 0;
 		std::uint64_t s1 = 0;
 
-		for (std::uint64_t jump : JUMP)
+		for (const std::uint64_t jump : JUMP)
 		{
 			for (int b = 0; b < 64; ++b)
 			{
@@ -1083,7 +1083,7 @@ namespace XoshiroCpp
 		std::uint64_t s0 = 0;
 		std::uint64_t s1 = 0;
 
-		for (std::uint64_t jump : LONG_JUMP)
+		for (const std::uint64_t jump : LONG_JUMP)
 		{
 			for (int b = 0; b < 64; ++b)
 			{
@@ -1148,7 +1148,7 @@ namespace XoshiroCpp
 		std::uint64_t s0 = 0;
 		std::uint64_t s1 = 0;
 
-		for (std::uint64_t jump : JUMP)
+		for (const std::uint64_t jump : JUMP)
 		{
 			for (int b = 0; b < 64; ++b)
 			{
@@ -1172,7 +1172,7 @@ namespace XoshiroCpp
 		std::uint64_t s0 = 0;
 		std::uint64_t s1 = 0;
 
-		for (std::uint64_t jump : LONG_JUMP)
+		for (const std::uint64_t jump : LONG_JUMP)
 		{
 			for (int b = 0; b < 64; ++b)
 			{
@@ -1237,7 +1237,7 @@ namespace XoshiroCpp
 		std::uint64_t s0 = 0;
 		std::uint64_t s1 = 0;
 
-		for (std::uint64_t jump : JUMP)
+		for (const std::uint64_t jump : JUMP)
 		{
 			for (int b = 0; b < 64; ++b)
 			{
@@ -1261,7 +1261,7 @@ namespace XoshiroCpp
 		std::uint64_t s0 = 0;
 		std::uint64_t s1 = 0;
 
-		for (std::uint64_t jump : LONG_JUMP)
+		for (const std::uint64_t jump : LONG_JUMP)
 		{
 			for (int b = 0; b < 64; ++b)
 			{
@@ -1338,7 +1338,7 @@ namespace XoshiroCpp
 		std::uint32_t s2 = 0;
 		std::uint32_t s3 = 0;
 
-		for (std::uint32_t jump : JUMP)
+		for (const std::uint32_t jump : JUMP)
 		{
 			for (int b = 0; b < 32; ++b)
 			{
@@ -1368,7 +1368,7 @@ namespace XoshiroCpp
 		std::uint32_t s2 = 0;
 		std::uint32_t s3 = 0;
 
-		for (std::uint32_t jump : LONG_JUMP)
+		for (const std::uint32_t jump : LONG_JUMP)
 		{
 			for (int b = 0; b < 32; ++b)
 			{
@@ -1449,7 +1449,7 @@ namespace XoshiroCpp
 		std::uint32_t s2 = 0;
 		std::uint32_t s3 = 0;
 
-		for (std::uint32_t jump : JUMP)
+		for (const std::uint32_t jump : JUMP)
 		{
 			for (int b = 0; b < 32; ++b)
 			{
@@ -1479,7 +1479,7 @@ namespace XoshiroCpp
 		std::uint32_t s2 = 0;
 		std::uint32_t s3 = 0;
 
-		for (std::uint32_t jump : LONG_JUMP)
+		for (const std::uint32_t jump : LONG_JUMP)
 		{
 			for (int b = 0; b < 32; ++b)
 			{
@@ -1560,7 +1560,7 @@ namespace XoshiroCpp
 		std::uint32_t s2 = 0;
 		std::uint32_t s3 = 0;
 
-		for (std::uint32_t jump : JUMP)
+		for (const std::uint32_t jump : JUMP)
 		{
 			for (int b = 0; b < 32; ++b)
 			{
@@ -1590,7 +1590,7 @@ namespace XoshiroCpp
 		std::uint32_t s2 = 0;
 		std::uint32_t s3 = 0;
 
-		for (std::uint32_t jump : LONG_JUMP)
+		for (const std::uint32_t jump : LONG_JUMP)
 		{
 			for (int b = 0; b < 32; ++b)
 			{

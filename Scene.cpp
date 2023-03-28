@@ -8,7 +8,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
-Scene::Scene()
+Scene::Scene() noexcept
     : _camera(45.0f, 0.1f, 100.0f)
 {
     Material& pinkSphere = Materials.emplace_back();

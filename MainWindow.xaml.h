@@ -38,8 +38,8 @@ namespace winrt::Butternut::implementation
 
         // standard window stuff
         void OnWindowActivate(IInspectable const& sender, winrt::Microsoft::UI::Xaml::WindowActivatedEventArgs const& args);
-        void OnWindowResized(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::WindowSizeChangedEventArgs const& args) noexcept;
-        void OnWindowClosed(IInspectable const& sender, winrt::Microsoft::UI::Xaml::WindowEventArgs const& args) noexcept;
+        void OnWindowResized(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::WindowSizeChangedEventArgs const& args);
+        void OnWindowClosed(IInspectable const& sender, winrt::Microsoft::UI::Xaml::WindowEventArgs const& args);
         void InvalidateIfNeeded();
         void SetMyTitleBar();
 
@@ -74,8 +74,8 @@ namespace winrt::Butternut::implementation
         void OnKeyDown(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::KeyRoutedEventArgs const& e);
         void OnPointerPressed(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e);
         void OnPointerMoved(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e);
-        void OnPointerReleased(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e) noexcept;
-        void OnPointerExited(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e) noexcept;
+        void OnPointerReleased(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e);
+        void OnPointerExited(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e);
         void CanvasBoard_SizeChanged(IInspectable const& sender, winrt::Microsoft::UI::Xaml::SizeChangedEventArgs const& e);
         void GoButton_Click(IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e);
         void ResetButton_Click(IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e);
@@ -99,13 +99,13 @@ namespace winrt::Butternut::implementation
         FPScounter fps{};
         float _dpi{ 0.0f };
         float _lastFrameTime{ 0 };
-        int _width;
-        int _height;
+        int _width{ 0 };
+        int _height{ 0 };
 
         PointerMode _PointerMode = PointerMode::None;
         winrt::Windows::System::VirtualKey _key = winrt::Windows::System::VirtualKey::None;
 
-        glm::vec2 _point;
+        glm::vec2 _point{0.0f};
         //winrt::Microsoft::UI::Input::PointerPoint _point{nullptr};
         bool _closing = false;
 

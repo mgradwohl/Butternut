@@ -129,9 +129,9 @@ namespace winrt::Butternut::implementation
     {
         ML_METHOD;
 
-        winrt::Windows::Foundation::Rect rectDest(0, 0, canvasBoard().Size().Width, canvasBoard().Size().Height);
+        const winrt::Windows::Foundation::Rect rectDest(0, 0, canvasBoard().Size().Width, canvasBoard().Size().Height);
 
-        float time = _frametimer.ElapsedMillis();
+        const float time = _frametimer.ElapsedMillis();
         float ts = time - _lastFrameTime;
         _lastFrameTime = time;
 
@@ -234,13 +234,13 @@ namespace winrt::Butternut::implementation
         InvalidateIfNeeded();
     }
 
-    void MainWindow::OnPointerReleased([[maybe_unused]] winrt::Windows::Foundation::IInspectable const& sender, [[maybe_unused]] winrt::Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e) noexcept
+    void MainWindow::OnPointerReleased([[maybe_unused]] winrt::Windows::Foundation::IInspectable const& sender, [[maybe_unused]] winrt::Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e)
     {
         _PointerMode = PointerMode::None;
         e.Handled(true);
     }
     
-    void MainWindow::OnPointerExited([[maybe_unused]] winrt::Windows::Foundation::IInspectable const& sender, [[maybe_unused]] winrt::Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e) noexcept
+    void MainWindow::OnPointerExited([[maybe_unused]] winrt::Windows::Foundation::IInspectable const& sender, [[maybe_unused]] winrt::Microsoft::UI::Xaml::Input::PointerRoutedEventArgs const& e)
     {
         _PointerMode = PointerMode::None;
         e.Handled(true);
@@ -435,7 +435,7 @@ namespace winrt::Butternut::implementation
         }
     }
 
-    void MainWindow::OnWindowClosed([[maybe_unused]] IInspectable const& sender, [[maybe_unused]] winrt::Microsoft::UI::Xaml::WindowEventArgs const& args) noexcept
+    void MainWindow::OnWindowClosed([[maybe_unused]] IInspectable const& sender, [[maybe_unused]] winrt::Microsoft::UI::Xaml::WindowEventArgs const& args)
     {
         ML_METHOD;
         _closing = true;
@@ -444,7 +444,7 @@ namespace winrt::Butternut::implementation
         //PropertyChangedRevoker();
     }
 
-    void MainWindow::OnWindowResized([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::WindowSizeChangedEventArgs const& args) noexcept
+    void MainWindow::OnWindowResized([[maybe_unused]] Windows::Foundation::IInspectable const& sender, [[maybe_unused]] Microsoft::UI::Xaml::WindowSizeChangedEventArgs const& args)
     {
         ML_METHOD;
 

@@ -23,18 +23,18 @@
 #include "Log.h"
 
 namespace Utils {
-	static winrt::Windows::UI::Color ConvertToColor(const glm::vec4& color)
+	static winrt::Windows::UI::Color ConvertToColor(const glm::vec4& color) noexcept
 	{
 		return winrt::Windows::UI::Color{ (uint8_t)(color.a * 255.0f), (uint8_t)(color.r * 255.0f), (uint8_t)(color.g * 255.0f), (uint8_t)(color.b * 255.0f) };
 	}
 }
 
-winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget& Renderer::GetImage()
+winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget& Renderer::GetImage() noexcept
 {
 	return m_FinalImage;
 }
 
-void Renderer::OnResize(winrt::Microsoft::Graphics::Canvas::CanvasDevice& device, uint32_t width, uint32_t height, float dpi)
+void Renderer::OnResize(const winrt::Microsoft::Graphics::Canvas::CanvasDevice& device, uint32_t width, uint32_t height, float dpi) noexcept
 {
 	ML_METHOD;
 	if (width == _width && height == _height && m_FinalImage)
@@ -57,8 +57,8 @@ void Renderer::OnResize(winrt::Microsoft::Graphics::Canvas::CanvasDevice& device
 
 	// HACK TODO
 	m_FinalImage = winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget(device, 10, 10, dpi); 
-	float w = m_FinalImage.ConvertPixelsToDips(_width);
-	float h = m_FinalImage.ConvertPixelsToDips(_height);
+	const float w = m_FinalImage.ConvertPixelsToDips(_width);
+	const float h = m_FinalImage.ConvertPixelsToDips(_height);
 
 	m_FinalImage = winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget(device, w, h, dpi);
 
@@ -163,10 +163,10 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 	float multiplier = 1.0f;
 	const glm::vec3 lightDir = glm::normalize(glm::vec3(-1, -1, 1));
 
-	int bounces = 10;
+	constexpr int bounces = 10;
 	for (int i = 0; i < bounces; i++)
 	{
-		Renderer::HitPayload payload = TraceRay(ray);
+		const Renderer::HitPayload payload = TraceRay(ray);
 		// TODO this hits perf testing because the CPU can't predict the branch
 		if (std::signbit(payload.HitDistance))
 		{
@@ -247,7 +247,7 @@ Renderer::HitPayload Renderer::ClosestHit(const Ray& ray, float hitDistance, int
 
 	const Sphere& closestSphere = m_ActiveScene->Spheres[objectIndex];
 
-	glm::vec3 origin = ray.Origin - closestSphere.Position;
+	const glm::vec3 origin = ray.Origin - closestSphere.Position;
 	payload.WorldPosition = origin + ray.Direction * hitDistance;
 	payload.WorldNormal = glm::normalize(payload.WorldPosition);
 
@@ -256,7 +256,7 @@ Renderer::HitPayload Renderer::ClosestHit(const Ray& ray, float hitDistance, int
 	return payload;
 }
 
-Renderer::HitPayload Renderer::Miss([[maybe_unused]] const Ray& ray)
+Renderer::HitPayload Renderer::Miss([[maybe_unused]] const Ray& ray) noexcept
 {
 	Renderer::HitPayload payload;
 	payload.HitDistance = -1.0f;

@@ -20,15 +20,17 @@ public:
 public:
 	Renderer() = default;
 
-	winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget& GetImage();
+	winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget& GetImage() noexcept;
 
-	void OnResize(winrt::Microsoft::Graphics::Canvas::CanvasDevice& device, uint32_t width, uint32_t height, float dpi);
+	//void Renderer::OnResize(const winrt::Microsoft::Graphics::Canvas::CanvasDevice& device, uint32_t width, uint32_t height, float dpi)
+
+	void OnResize(const winrt::Microsoft::Graphics::Canvas::CanvasDevice& device, uint32_t width, uint32_t height, float dpi) noexcept;
 	void Render(Scene& scene);
 
-	winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget& GetFinalImage() { return m_FinalImage; }
+	winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget& GetFinalImage() noexcept { return m_FinalImage; }
 
-	void ResetFrameIndex() { m_FrameIndex = 1; }
-	Settings& GetSettings() { return m_Settings; }
+	void ResetFrameIndex() noexcept { m_FrameIndex = 1; }
+	Settings& GetSettings() noexcept { return m_Settings; }
 
 private:
 	struct HitPayload
@@ -45,9 +47,9 @@ private:
 
 	HitPayload TraceRay(const Ray& ray);
 	HitPayload ClosestHit(const Ray& ray, float hitDistance, int objectIndex);
-	HitPayload Miss(const Ray& ray);
-	[[nodiscard]] size_t Width() const { return _width; };
-	[[nodiscard]] size_t Height() const { return _height; };
+	HitPayload Miss(const Ray& ray) noexcept;
+	[[nodiscard]] size_t Width() const noexcept { return _width; };
+	[[nodiscard]] size_t Height() const noexcept { return _height; };
 
 private:
 	winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget m_FinalImage{nullptr};

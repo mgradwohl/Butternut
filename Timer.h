@@ -8,17 +8,17 @@
 	class Timer
 	{
 	public:
-		Timer()
+		Timer() noexcept
 		{
 			Reset();
 		}
 
-		void Reset()
+		void Reset() noexcept
 		{
 			m_Start = std::chrono::high_resolution_clock::now();
 		}
 
-		float Elapsed()
+		float Elapsed() noexcept
 		{
 			return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - m_Start).count() * 0.001f * 0.001f * 0.001f;
 		}

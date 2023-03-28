@@ -25,7 +25,7 @@ struct Sphere
 class Scene
 {
 public:
-	Scene();
+	Scene() noexcept;
 
 	void Init(uint32_t viewportWidth, uint32_t viewportHeight)
 	{

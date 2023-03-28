@@ -7,7 +7,7 @@ namespace Util
     class RandomVecWithinCone
     {
     public:
-        static float Float()
+        static float Float() noexcept
         {
             //return s_Distribution(rng);
             
