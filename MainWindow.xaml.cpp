@@ -99,7 +99,8 @@ namespace winrt::Butternut::implementation
         _queue = winrt::Microsoft::UI::Dispatching::DispatcherQueue::GetForCurrentThread();
         timer = _queue.CreateTimer();
         timer.IsRepeating(true);
-        timer.Interval(std::chrono::milliseconds(1000 / 60));
+        // TODO get rid of timers and have a real game loop
+        timer.Interval(std::chrono::milliseconds(1000 / 90));
         timer.Tick({ get_strong(), &MainWindow::OnTick });
 
 
@@ -128,11 +129,11 @@ namespace winrt::Butternut::implementation
     {
         ML_METHOD;
 
+        winrt::Windows::Foundation::Rect rectDest(0, 0, canvasBoard().Size().Width, canvasBoard().Size().Height);
+
         float time = _frametimer.ElapsedMillis();
         float ts = time - _lastFrameTime;
-        //ts = glm::min<float>(ts, 0.0333f);
         _lastFrameTime = time;
-        winrt::Windows::Foundation::Rect rectDest (0,0, canvasBoard().Size().Width, canvasBoard().Size().Height);
 
         if (!_closing)
         {
@@ -146,11 +147,13 @@ namespace winrt::Butternut::implementation
             args.DrawingSession().DrawImage(_renderer.GetImage(), rectDest);
         }
 
-        _key = winrt::Windows::System::VirtualKey::None;
         ML_TRACE("Last frame took {}ms", ts);
         SetStatus(std::format("Last frame time {}ms", ts));
         PumpProperties();
         fps.AddFrame();
+
+        _key = winrt::Windows::System::VirtualKey::None;
+
     }
 
     void MainWindow::PumpProperties()

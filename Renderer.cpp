@@ -16,6 +16,7 @@
 
 #include<gsl/gsl>
 
+// PERF TEST
 //#include "Random.h"
 //#include "RandomFloat.h"
 #include "RandomVecWithinCone.h"
@@ -162,7 +163,7 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 	float multiplier = 1.0f;
 	const glm::vec3 lightDir = glm::normalize(glm::vec3(-1, -1, 1));
 
-	int bounces = 5;
+	int bounces = 10;
 	for (int i = 0; i < bounces; i++)
 	{
 		Renderer::HitPayload payload = TraceRay(ray);
@@ -183,14 +184,11 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 		multiplier *= 0.5f;
 
 		ray.Origin = payload.WorldPosition + payload.WorldNormal * 0.0001f;
-		//ray.Direction = glm::reflect(ray.Direction,
-		//	payload.WorldNormal + material.Roughness * winrt::Butternut::implementation::Random::Vec3(-0.5f, 0.5f));
 
-		//ray.Direction = glm::reflect(ray.Direction,
-		//	payload.WorldNormal + material.Roughness * ::Util::RandomFloat::Vec3WithinCone());
-
-		ray.Direction = glm::reflect(ray.Direction,
-			payload.WorldNormal + material.Roughness * ::Util::RandomVecWithinCone::Vec3WithinCone());
+		// PERF TEST
+		//ray.Direction = glm::reflect(ray.Direction, payload.WorldNormal + material.Roughness * winrt::Butternut::implementation::Random::Vec3(-0.5f, 0.5f));
+		//ray.Direction = glm::reflect(ray.Direction, payload.WorldNormal + material.Roughness * ::Util::RandomFloat::Vec3WithinCone());
+		ray.Direction = glm::reflect(ray.Direction, payload.WorldNormal + material.Roughness * ::Util::RandomVecWithinCone::Vec3WithinCone());
 	}
 	return glm::vec4(color, 1.0f);
 }
@@ -209,7 +207,7 @@ Renderer::HitPayload Renderer::TraceRay(const Ray& ray)
 	for (size_t i = 0; i < m_ActiveScene->Spheres.size(); i++)
 	{
 		const Sphere& sphere = m_ActiveScene->Spheres[i];
-		glm::vec3 origin = ray.Origin - sphere.Position;
+		const glm::vec3 origin = ray.Origin - sphere.Position;
 
 		const float a = glm::dot(ray.Direction, ray.Direction);
 		const float b = 2.0f * glm::dot(origin, ray.Direction);
