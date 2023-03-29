@@ -23,9 +23,15 @@
 #include "Log.h"
 
 namespace Utils {
-	static winrt::Windows::UI::Color ConvertToColor(const glm::vec4& color) noexcept
+	[[nodiscard]] static winrt::Windows::UI::Color ConvertToColor(const glm::vec4& color) noexcept
 	{
 		return winrt::Windows::UI::Color{ (uint8_t)(color.a * 255.0f), (uint8_t)(color.r * 255.0f), (uint8_t)(color.g * 255.0f), (uint8_t)(color.b * 255.0f) };
+	}
+
+	[[nodiscard]] static float ConvertPixelsToDips(float pixels, float dpi)
+	{
+		constexpr float  dipsPerInch = 96.0;
+		return pixels * dipsPerInch / dpi;
 	}
 }
 
@@ -56,9 +62,9 @@ void Renderer::OnResize(const winrt::Microsoft::Graphics::Canvas::CanvasDevice& 
 	}
 
 	// HACK TODO
-	m_FinalImage = winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget(device, 10, 10, dpi); 
-	const float w = m_FinalImage.ConvertPixelsToDips(_width);
-	const float h = m_FinalImage.ConvertPixelsToDips(_height);
+	//m_FinalImage = winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget(device, 10, 10, dpi); 
+	const float w = Utils::ConvertPixelsToDips(_width, dpi);
+	const float h = Utils::ConvertPixelsToDips(_height, dpi);
 
 	m_FinalImage = winrt::Microsoft::Graphics::Canvas::CanvasRenderTarget(device, w, h, dpi);
 
