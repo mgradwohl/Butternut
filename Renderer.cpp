@@ -67,13 +67,9 @@ void Renderer::OnResize(const winrt::Microsoft::Graphics::Canvas::CanvasDevice& 
 
 	m_ImageHorizontalIter.resize(_width);
 	std::iota(m_ImageHorizontalIter.begin(), m_ImageHorizontalIter.end(), 0);
-	//for (uint32_t i = 0; i < _width; i++)
-	//	m_ImageHorizontalIter[i] = i;
 
 	m_ImageVerticalIter.resize(_height);
 	std::iota(m_ImageVerticalIter.begin(), m_ImageVerticalIter.end(), 0);
-	//for (uint32_t i = 0; i < _height; i++)
-	//	m_ImageVerticalIter[i] = i;
 
 	m_FrameIndex = 1;
 }
