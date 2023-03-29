@@ -12,6 +12,7 @@
 #include <winrt/Windows.Storage.Streams.h>
 #include <execution>
 #include <vector>
+#include <numeric>
 
 #include<gsl/gsl>
 
@@ -65,12 +66,14 @@ void Renderer::OnResize(const winrt::Microsoft::Graphics::Canvas::CanvasDevice& 
 	m_AccumulationData.resize(_width * _height);
 
 	m_ImageHorizontalIter.resize(_width);
-	for (uint32_t i = 0; i < _width; i++)
-		m_ImageHorizontalIter[i] = i;
+	std::iota(m_ImageHorizontalIter.begin(), m_ImageHorizontalIter.end(), 0);
+	//for (uint32_t i = 0; i < _width; i++)
+	//	m_ImageHorizontalIter[i] = i;
 
 	m_ImageVerticalIter.resize(_height);
-	for (uint32_t i = 0; i < _height; i++)
-		m_ImageVerticalIter[i] = i;
+	std::iota(m_ImageVerticalIter.begin(), m_ImageVerticalIter.end(), 0);
+	//for (uint32_t i = 0; i < _height; i++)
+	//	m_ImageVerticalIter[i] = i;
 
 	m_FrameIndex = 1;
 }
