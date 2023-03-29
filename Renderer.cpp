@@ -12,7 +12,6 @@
 #include <winrt/Windows.Storage.Streams.h>
 #include <execution>
 #include <vector>
-#include <cmath>
 
 #include<gsl/gsl>
 
@@ -168,7 +167,7 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 	{
 		const Renderer::HitPayload payload = TraceRay(ray);
 		// TODO this hits perf testing because the CPU can't predict the branch
-		if (std::signbit(payload.HitDistance))
+		if (payload.HitDistance < 0.0f)
 		{
 			color += skyColor * multiplier;
 			break;
