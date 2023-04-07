@@ -30,7 +30,7 @@ namespace Utils {
 
 	[[nodiscard]] static float ConvertPixelsToDips(float pixels, float dpi)
 	{
-		constexpr float  dipsPerInch = 96.0;
+		constexpr float  dipsPerInch = 96.0f;
 		return pixels * dipsPerInch / dpi;
 	}
 }
@@ -167,7 +167,7 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 	float multiplier = 1.0f;
 	const glm::vec3 lightDir = glm::normalize(glm::vec3(-1, -1, 1));
 
-	constexpr int bounces = 10;
+	constexpr int bounces = 32;
 	for (int i = 0; i < bounces; i++)
 	{
 		const Renderer::HitPayload payload = TraceRay(ray);
