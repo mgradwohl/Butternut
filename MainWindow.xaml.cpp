@@ -131,10 +131,11 @@ namespace winrt::Butternut::implementation
 
         const winrt::Windows::Foundation::Rect rectDest(0, 0, canvasBoard().Size().Width, canvasBoard().Size().Height);
 
+        //does nothing
+        //args.DrawingSession().Antialiasing(Microsoft::Graphics::Canvas::CanvasAntialiasing::Aliased);
         const float time = _frametimer.ElapsedMillis();
         float ts = time - _lastFrameTime;
         _lastFrameTime = time;
-
         if (!_closing)
         {
             if (_scene.OnUpdate(ts, _key, _point))
@@ -153,7 +154,6 @@ namespace winrt::Butternut::implementation
         fps.AddFrame();
 
         _key = winrt::Windows::System::VirtualKey::None;
-
     }
 
     void MainWindow::PumpProperties()
