@@ -167,7 +167,7 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 	float multiplier = 1.0f;
 	const glm::vec3 lightDir = glm::normalize(glm::vec3(-1, -1, 1));
 
-	constexpr int bounces = 32;
+	constexpr int bounces = 6;
 	for (int i = 0; i < bounces; i++)
 	{
 		const Renderer::HitPayload payload = TraceRay(ray);
