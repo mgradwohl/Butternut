@@ -6,18 +6,19 @@
 
 #include <string>
 
-#include <winrt/Windows.Foundation.h>
-#include <winrt/Windows.Graphics.Display.h>
-#include <winrt/Microsoft.UI.Dispatching.h>
-#include <winrt/Microsoft.UI.Xaml.h>
-#include <winrt/Microsoft.UI.Xaml.Data.h>
-#include <winrt/Microsoft.UI.Xaml.Input.h>
-#include <winrt/Microsoft.Graphics.Canvas.h>
-#include <winrt/Microsoft.Graphics.Canvas.UI.Xaml.h>
+//#include <winrt/Windows.Foundation.h>
+//#include <winrt/Windows.Graphics.Display.h>
+//#include <winrt/Microsoft.UI.Dispatching.h>
+//#include <winrt/Microsoft.UI.Xaml.h>
+//#include <winrt/Microsoft.UI.Xaml.Data.h>
+//#include <winrt/Microsoft.UI.Xaml.Input.h>
+//#include <winrt/Microsoft.Graphics.Canvas.h>
+//#include <winrt/Microsoft.Graphics.Canvas.UI.Xaml.h>
 
 #include "fpscounter.h"
 #include "Scene.h"
 #include "Renderer.h"
+#include "Timer.h"
 
 namespace winrt::Butternut::implementation
 {

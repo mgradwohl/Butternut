@@ -28,6 +28,11 @@
 #include <utility>
 #include <source_location>
 #include <execution>
+#include <string>
+#include <utility>
+#include <execution>
+#include <vector>
+#include <numeric>
 
 // Undefine GetCurrentTime macro to prevent
 // conflict with Storyboard::GetCurrentTime

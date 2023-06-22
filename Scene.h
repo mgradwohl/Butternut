@@ -1,11 +1,8 @@
 #pragma once
 
-#include <glm/glm.hpp>
-
 #include <vector>
 
 #include "Camera.h"
-#include "Timer.h"
 
 struct Material
 {

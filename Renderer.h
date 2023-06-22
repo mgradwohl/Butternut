@@ -1,10 +1,5 @@
 #pragma once
 
-#include <memory>
-
-#include <winrt/Microsoft.Graphics.Canvas.h>
-#include <glm/glm.hpp>
-
 #include "Camera.h"
 #include "Ray.h"
 #include "Scene.h"

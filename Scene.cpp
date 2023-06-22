@@ -1,12 +1,6 @@
 #include "pch.h"
 
 #include "Scene.h"
-#include "Timer.h"
-#include "Renderer.h"
-#include "Camera.h"
-
-#include <glm/gtc/type_ptr.hpp>
-
 
 Scene::Scene() noexcept
     : _camera(45.0f, 0.1f, 100.0f)

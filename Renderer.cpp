@@ -2,33 +2,36 @@
 
 #include "Renderer.h"
 
-#include <winrt/Windows.Foundation.Numerics.h>
-#include <WindowsNumerics.h>
-#include <winrt/Microsoft.UI.h>
-#include "winrt/Windows.UI.h"
+//#include <winrt/Windows.Foundation.Numerics.h>
+//#include <WindowsNumerics.h>
+//#include <winrt/Microsoft.UI.h>
+//#include "winrt/Windows.UI.h"
 #include <winrt/Microsoft.Graphics.Canvas.h>
-#include <winrt/Microsoft.Graphics.Canvas.UI.Xaml.h>
-#include <winrt/Microsoft.Graphics.DirectX.h>
-#include <winrt/Windows.Storage.Streams.h>
+//#include <winrt/Microsoft.Graphics.Canvas.UI.Xaml.h>
+//#include <winrt/Microsoft.Graphics.DirectX.h>
+//#include <winrt/Windows.Storage.Streams.h>
 #include <execution>
 #include <vector>
-#include <numeric>
+//#include <numeric>
 
-#include<gsl/gsl>
+//#include<gsl/gsl>
 
 // PERF TEST
 //#include "Random.h"
 //#include "RandomFloat.h"
 #include "RandomVecWithinCone.h"
 #include "Log.h"
-
+#include <spdlog/stopwatch.h>
+#include <chrono>
+// #include <spdlog/fmt/chrono.h>
+//..
 namespace Utils {
 	[[nodiscard]] static winrt::Windows::UI::Color ConvertToColor(const glm::vec4& color) noexcept
 	{
 		return winrt::Windows::UI::Color{ (uint8_t)(color.a * 255.0f), (uint8_t)(color.r * 255.0f), (uint8_t)(color.g * 255.0f), (uint8_t)(color.b * 255.0f) };
 	}
 
-	[[nodiscard]] static float ConvertPixelsToDips(float pixels, float dpi)
+	[[nodiscard]] static float ConvertPixelsToDips(size_t pixels, float dpi)
 	{
 		constexpr float  dipsPerInch = 96.0f;
 		return pixels * dipsPerInch / dpi;
@@ -87,7 +90,7 @@ void Renderer::UpdateThread(uint32_t start, uint32_t end)
 	{
 		for (uint32_t x = 0; x < _width; x++)
 		{
-			glm::vec4 color = PerPixel(x, y);
+			glm::vec4 color(PerPixel(x, y));
 			m_AccumulationData[x + y * _width] += color;
 
 			color = m_AccumulationData[x + y * _width];
@@ -102,13 +105,16 @@ void Renderer::UpdateThread(uint32_t start, uint32_t end)
 void Renderer::Render(Scene& scene)
 {
 	ML_METHOD;
+
+	spdlog::stopwatch sw;
+
 	m_ActiveScene = &scene;
 	m_ActiveCamera = &(scene.GetCamera());
 	const glm::vec4 skyColor = glm::vec4(1.0f,0.6f, 0.7f, 0.9f);
 
 	if (m_FrameIndex == 1)
 	{
-		memset(m_AccumulationData.data(), 0, _width * _height * sizeof(glm::vec4));
+		m_AccumulationData.assign(m_AccumulationData.size(), glm::vec4(0.0f));
 		ML_TRACE("Resetting FrameIndex\n");
 	}
 
@@ -127,6 +133,7 @@ void Renderer::Render(Scene& scene)
 	//	rowStart += rowsPerThread;
 	//}
 	//threads.emplace_back(std::jthread{ &Renderer::UpdateThread, this, rowStart, rowStart + rowsPerThread + remainingRows});
+	// end super slow code
 	
 	//Original Cherno Code with some modifications
 	std::for_each(std::execution::par, m_ImageVerticalIter.begin(), m_ImageVerticalIter.end(),
@@ -135,7 +142,7 @@ void Renderer::Render(Scene& scene)
 			std::for_each(std::execution::seq, m_ImageHorizontalIter.begin(), m_ImageHorizontalIter.end(),
 				[this, y](uint32_t x)
 				{
-					glm::vec4 color = PerPixel(x, y);
+					glm::vec4 color(PerPixel(x, y));
 					m_AccumulationData[x + y * _width] += color;
 
 					color = m_AccumulationData[x + y * _width];
@@ -153,24 +160,33 @@ void Renderer::Render(Scene& scene)
 	else
 		m_FrameIndex = 1;
 
-	ML_TRACE("FrameIndex {}\n", m_FrameIndex);
+	ML_TRACE("FrameIndex {}", m_FrameIndex);
+	//const std::chrono::duration elapsed = sw.elapsed();
+	ML_TRACE("Render StopWatch {:3}", std::chrono::duration_cast<std::chrono::milliseconds>(sw.elapsed()));
 }
+/*
+	spdlog::stopwatch sw;
+	const std::chrono::duration elapsed = sw.elapsed();
+	ML_TRACE("Render StopWatch {:3}", std::chrono::duration_cast<std::chrono::milliseconds>(elapsed));
+*/
 
 glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 {
-	Ray ray;
-	ray.Origin = m_ActiveCamera->GetPosition();
-	ray.Direction = m_ActiveCamera->GetRayDirections()[x + y * _width];
+	//Ray ray;
+	//ray.Origin = m_ActiveCamera->GetPosition();
+	//ray.Direction = m_ActiveCamera->GetRayDirections()[x + y * _width];
 	
+	Ray ray(m_ActiveCamera->GetPosition(), m_ActiveCamera->GetRayDirections()[x + y * _width]);
+
 	glm::vec3 color(0.0f);
-	const glm::vec3 skyColor = glm::vec3(0.6f, 0.7f, 0.9f);
+	const glm::vec3 skyColor(0.6f, 0.7f, 0.9f);
 	float multiplier = 1.0f;
 	const glm::vec3 lightDir = glm::normalize(glm::vec3(-1, -1, 1));
 
 	constexpr int bounces = 6;
 	for (int i = 0; i < bounces; i++)
 	{
-		const Renderer::HitPayload payload = TraceRay(ray);
+		const Renderer::HitPayload payload(TraceRay(ray));
 		// TODO this hits perf testing because the CPU can't predict the branch
 		if (payload.HitDistance < 0.0f)
 		{
@@ -179,10 +195,10 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 		}
 
 		const float lightIntensity = glm::max(glm::dot(payload.WorldNormal, -lightDir), 0.0f); // == cos(angle)
-		const Sphere& sphere = m_ActiveScene->Spheres[payload.ObjectIndex];
-		const Material& material = m_ActiveScene->Materials[sphere.MaterialIndex];
+		const Sphere& sphere(m_ActiveScene->Spheres[payload.ObjectIndex]);
+		const Material& material(m_ActiveScene->Materials[sphere.MaterialIndex]);
 
-		glm::vec3 sphereColor = material.Albedo;
+		glm::vec3 sphereColor(material.Albedo);
 		sphereColor *= lightIntensity;
 		color += sphereColor * multiplier;
 
@@ -212,7 +228,7 @@ Renderer::HitPayload Renderer::TraceRay(const Ray& ray)
 	for (size_t i = 0; i < m_ActiveScene->Spheres.size(); i++)
 	{
 		const Sphere& sphere = m_ActiveScene->Spheres[i];
-		const glm::vec3 origin = ray.Origin - sphere.Position;
+		const glm::vec3 origin(ray.Origin - sphere.Position);
 
 		const float a = glm::dot(ray.Direction, ray.Direction);
 		const float b = 2.0f * glm::dot(origin, ray.Direction);
@@ -249,9 +265,9 @@ Renderer::HitPayload Renderer::ClosestHit(const Ray& ray, float hitDistance, int
 	payload.HitDistance = hitDistance;
 	payload.ObjectIndex = objectIndex;
 
-	const Sphere& closestSphere = m_ActiveScene->Spheres[objectIndex];
+	const Sphere& closestSphere(m_ActiveScene->Spheres[objectIndex]);
 
-	const glm::vec3 origin = ray.Origin - closestSphere.Position;
+	const glm::vec3 origin(ray.Origin - closestSphere.Position);
 	payload.WorldPosition = origin + ray.Direction * hitDistance;
 	payload.WorldNormal = glm::normalize(payload.WorldPosition);
 

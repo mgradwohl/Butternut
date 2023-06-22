@@ -100,7 +100,7 @@ namespace winrt::Butternut::implementation
         timer = _queue.CreateTimer();
         timer.IsRepeating(true);
         // TODO get rid of timers and have a real game loop
-        timer.Interval(std::chrono::milliseconds(1000 / 90));
+        timer.Interval(std::chrono::milliseconds(1000 / 120));
         timer.Tick({ get_strong(), &MainWindow::OnTick });
 
 
@@ -148,7 +148,7 @@ namespace winrt::Butternut::implementation
             args.DrawingSession().DrawImage(_renderer.GetImage(), rectDest);
         }
 
-        ML_TRACE("Last frame took {}ms", ts);
+        ML_TRACE("CanvasBoard_Draw {}ms", ts);
         SetStatus(std::format("Last frame time {}ms", ts));
         PumpProperties();
         fps.AddFrame();

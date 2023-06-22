@@ -1,5 +1,4 @@
 #include "XoshiroCpp.h"
-//#include <random>
 #include <glm/glm.hpp>
 
 namespace Util
