@@ -160,7 +160,7 @@
     <ClCompile>
       <PreprocessorDefinitions>_DEBUG;ML_LOGGING;%(PreprocessorDefinitions);GLM_FORCE_INTRINSICS;GLM_FORCE_LEFT_HANDED;GLM_FORCE_DEPTH_ZERO_TO_ONE;WIN32_LEAN_AND_MEAN;WINRT_LEAN_AND_MEAN</PreprocessorDefinitions>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);C:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);D:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">stdcpp20</LanguageStandard>
       <LanguageStandard_C Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">Default</LanguageStandard_C>
@@ -172,8 +172,8 @@
       <BuildStlModules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</BuildStlModules>
       <EnableModules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</EnableModules>
       <BuildStlModules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</BuildStlModules>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);C:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);C:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);D:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);D:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</CompileAsManaged>
@@ -195,7 +195,7 @@
     <ClCompile>
       <PreprocessorDefinitions>_DEBUG;ML_LOGGING;%(PreprocessorDefinitions);GLM_FORCE_INTRINSICS;GLM_FORCE_LEFT_HANDED;GLM_FORCE_DEPTH_ZERO_TO_ONE;WIN32_LEAN_AND_MEAN;WINRT_LEAN_AND_MEAN</PreprocessorDefinitions>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Tidy|x64'">stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Tidy|x64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);C:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Tidy|x64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);D:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Tidy|ARM64'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Tidy|Win32'">stdcpp20</LanguageStandard>
       <LanguageStandard_C Condition="'$(Configuration)|$(Platform)'=='Tidy|ARM64'">Default</LanguageStandard_C>
@@ -207,8 +207,8 @@
       <BuildStlModules Condition="'$(Configuration)|$(Platform)'=='Tidy|Win32'">false</BuildStlModules>
       <EnableModules Condition="'$(Configuration)|$(Platform)'=='Tidy|x64'">false</EnableModules>
       <BuildStlModules Condition="'$(Configuration)|$(Platform)'=='Tidy|x64'">false</BuildStlModules>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Tidy|ARM64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);C:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Tidy|Win32'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);C:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Tidy|ARM64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);D:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Tidy|Win32'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);D:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Tidy|ARM64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Tidy|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Tidy|x64'">false</CompileAsManaged>
@@ -230,7 +230,7 @@
     <ClCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions);GLM_FORCE_INTRINSICS;GLM_FORCE_LEFT_HANDED;GLM_FORCE_DEPTH_ZERO_TO_ONE;WIN32_LEAN_AND_MEAN;WINRT_LEAN_AND_MEAN</PreprocessorDefinitions>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Release|x64'">stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);C:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);D:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Speed</FavorSizeOrSpeed>
       <EnableFiberSafeOptimizations Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</EnableFiberSafeOptimizations>
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
@@ -251,8 +251,8 @@
       <BuildStlModules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</BuildStlModules>
       <EnableModules Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</EnableModules>
       <BuildStlModules Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</BuildStlModules>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);C:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);C:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);D:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);D:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
@@ -274,7 +274,7 @@
     <ClCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions);GLM_FORCE_INTRINSICS;GLM_FORCE_LEFT_HANDED;GLM_FORCE_DEPTH_ZERO_TO_ONE;WIN32_LEAN_AND_MEAN;WINRT_LEAN_AND_MEAN</PreprocessorDefinitions>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Distro|x64'">stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Distro|x64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);C:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Distro|x64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);D:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Distro|x64'">Speed</FavorSizeOrSpeed>
       <EnableFiberSafeOptimizations Condition="'$(Configuration)|$(Platform)'=='Distro|x64'">true</EnableFiberSafeOptimizations>
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Distro|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
@@ -295,8 +295,8 @@
       <BuildStlModules Condition="'$(Configuration)|$(Platform)'=='Distro|Win32'">false</BuildStlModules>
       <EnableModules Condition="'$(Configuration)|$(Platform)'=='Distro|x64'">false</EnableModules>
       <BuildStlModules Condition="'$(Configuration)|$(Platform)'=='Distro|x64'">false</BuildStlModules>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Distro|ARM64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);C:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Distro|Win32'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);C:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Distro|ARM64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);D:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Distro|Win32'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);D:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Distro|ARM64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Distro|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Distro|x64'">false</CompileAsManaged>
@@ -324,7 +324,7 @@
     <ClCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions);GLM_FORCE_INTRINSICS;GLM_FORCE_LEFT_HANDED;GLM_FORCE_DEPTH_ZERO_TO_ONE;WIN32_LEAN_AND_MEAN;WINRT_LEAN_AND_MEAN</PreprocessorDefinitions>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Distro no PCH|x64'">stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Distro no PCH|x64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);C:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Distro no PCH|x64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);D:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Distro no PCH|x64'">Speed</FavorSizeOrSpeed>
       <EnableFiberSafeOptimizations Condition="'$(Configuration)|$(Platform)'=='Distro no PCH|x64'">true</EnableFiberSafeOptimizations>
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Distro no PCH|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
@@ -345,8 +345,8 @@
       <BuildStlModules Condition="'$(Configuration)|$(Platform)'=='Distro no PCH|Win32'">false</BuildStlModules>
       <EnableModules Condition="'$(Configuration)|$(Platform)'=='Distro no PCH|x64'">false</EnableModules>
       <BuildStlModules Condition="'$(Configuration)|$(Platform)'=='Distro no PCH|x64'">false</BuildStlModules>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Distro no PCH|ARM64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);C:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Distro no PCH|Win32'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);C:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Distro no PCH|ARM64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);D:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Distro no PCH|Win32'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);D:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Distro no PCH|ARM64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Distro no PCH|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Distro no PCH|x64'">false</CompileAsManaged>
@@ -374,7 +374,7 @@
     <ClCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions);ML_LOGGING;GLM_FORCE_INTRINSICS;GLM_FORCE_LEFT_HANDED;GLM_FORCE_DEPTH_ZERO_TO_ONE;WINRT_DIAGNOSTICS;WIN32_LEAN_AND_MEAN;WINRT_LEAN_AND_MEAN</PreprocessorDefinitions>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Release Test|x64'">stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Test|x64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);C:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Test|x64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);D:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Release Test|x64'">Speed</FavorSizeOrSpeed>
       <EnableFiberSafeOptimizations Condition="'$(Configuration)|$(Platform)'=='Release Test|x64'">true</EnableFiberSafeOptimizations>
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release Test|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
@@ -395,8 +395,8 @@
       <BuildStlModules Condition="'$(Configuration)|$(Platform)'=='Release Test|Win32'">false</BuildStlModules>
       <EnableModules Condition="'$(Configuration)|$(Platform)'=='Release Test|x64'">false</EnableModules>
       <BuildStlModules Condition="'$(Configuration)|$(Platform)'=='Release Test|x64'">false</BuildStlModules>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Test|ARM64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);C:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Test|Win32'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);C:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Test|ARM64'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);D:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Test|Win32'">$(ProjectDir);$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories);D:\VulkanSDK\1.3.268.0\Include;$(ProjectDir)deps\wil\include;$(ProjectDir)deps\spdlog\include;$(ProjectDir)deps\gsl\include</AdditionalIncludeDirectories>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release Test|ARM64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release Test|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release Test|x64'">false</CompileAsManaged>
